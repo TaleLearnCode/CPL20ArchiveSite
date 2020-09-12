@@ -1,20 +1,26 @@
-﻿using System;
+﻿using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace CPL20ArchiveBuilder
 {
 	class Program
 	{
 
-		static void Main()
+		static async Task Main()
 		{
 
 
 			using SqlConnection sqlConnection = new SqlConnection(Settings.DatabaseConnectionString);
 			sqlConnection.Open();
+
+			var blobServiceClient = new BlobServiceClient(Settings.StorageConnectionString);
+			var blobContainerClient = blobServiceClient.GetBlobContainerClient("cpl20");
 
 			var speakers = Speakers.GetSpeakersForEvent(10, sqlConnection);
 			var sessions = Session.GetSessionForEvent(10, sqlConnection, speakers);
@@ -34,11 +40,16 @@ namespace CPL20ArchiveBuilder
 					if (sessions.ContainsKey(Convert.ToInt32(sessionPathComponents[sessionPathComponents.Length - 1])))
 					{
 						var session = sessions[Convert.ToInt32(sessionPathComponents[sessionPathComponents.Length - 1])];
-						Console.WriteLine(session.Id);
+						Console.WriteLine($"Uploading MP4 for Session {session.Id}");
+						await UploadVideoAsync(session.Id, sessionPath, blobContainerClient);
 						var path = $@"{outputPath}sessions\{session.Id}\";
 						Directory.CreateDirectory(path);
+						Console.WriteLine($"Writing session pages for Session {session.Id}");
 						File.WriteAllText($"{path}index.html", BuildIndexPage(session, sessionTags));
-
+						File.WriteAllText($"{path}player.html", BuildPlayerPage(session));
+						File.WriteAllText($"{path}config.xml", BuildConfigXML(session));
+						File.WriteAllText($"{path}config_xml.js", BuildConfigXMLJs(session));
+						Console.WriteLine();
 					}
 				}
 			}
@@ -241,6 +252,162 @@ namespace CPL20ArchiveBuilder
 			indexPage.AppendLine("</body>");
 			indexPage.AppendLine("</html>");
 			return indexPage.ToString();
+		}
+
+		private static string BuildPlayerPage(Session session)
+		{
+			var playerPage = new StringBuilder();
+			playerPage.AppendLine("<!DOCTYPE html>");
+			playerPage.AppendLine("<html>");
+			playerPage.AppendLine("<head>");
+			playerPage.AppendLine("  <meta name=\"google\" value=\"notranslate\" />");
+			playerPage.AppendLine("  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />");
+			playerPage.AppendLine("  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />");
+			playerPage.AppendLine("  <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\">");
+			playerPage.AppendLine("  <title></title>");
+			playerPage.AppendLine("  <link href=\"https://fonts.googleapis.com/css?family=Quicksand|Actor|Source+Sans+Pro:900|Lato:400,700,900|Oswald:400,700|Abel:400|Dosis:600\" rel=\"stylesheet\">");
+			playerPage.AppendLine("  <link href=\"https://greeneventstechnology.azureedge.net/cpl20/css/techsmith-smart-player.min.css\" rel=\"stylesheet\" type=\"text/css\" />");
+			playerPage.AppendLine("");
+			playerPage.AppendLine("  <style>");
+			playerPage.AppendLine("    html, body {");
+			playerPage.AppendLine("      background-color: #1a1a1a;");
+			playerPage.AppendLine("    }");
+			playerPage.AppendLine("  </style>");
+			playerPage.AppendLine("</head>");
+			playerPage.AppendLine("<body>");
+			playerPage.AppendLine("");
+			playerPage.AppendLine("  <div id=\"tscVideoContent\">");
+			playerPage.AppendLine("    <img width=\"32px\" height=\"32px\" style=\"position: absolute; top: 50%; left: 50%; margin: -16px 0 0 -16px\"");
+			playerPage.AppendLine("         src=\"data:image/gif;base64,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\">");
+			playerPage.AppendLine("  </div>");
+			playerPage.AppendLine("");
+			playerPage.AppendLine("  <script src=\"config_xml.js\"></script>");
+			playerPage.AppendLine("  <script type=\"text/javascript\">");
+			playerPage.AppendLine("    (function (window) {");
+			playerPage.AppendLine("      function setup(TSC) {");
+			playerPage.AppendLine($"        TSC.playerConfiguration.addMediaSrc(\"https://greeneventstechnology.azureedge.net/cpl20/videos/{session.Id}.mp4\");");
+			playerPage.AppendLine("        TSC.playerConfiguration.setXMPSrc(\"config.xml\");");
+			playerPage.AppendLine("        TSC.playerConfiguration.setAutoHideControls(true);");
+			playerPage.AppendLine("        TSC.playerConfiguration.setBackgroundColor(\"#000000\");");
+			playerPage.AppendLine("        TSC.playerConfiguration.setCaptionsEnabled(false);");
+			playerPage.AppendLine("        TSC.playerConfiguration.setSidebarEnabled(false);");
+			playerPage.AppendLine("");
+			playerPage.AppendLine("        TSC.playerConfiguration.setAutoPlayMedia(false);");
+			playerPage.AppendLine($"        TSC.playerConfiguration.setPosterImageSrc(\"https://greeneventstechnology.azureedge.net/cpl20/thumbnails/{session.Id}.jpg\");");
+			playerPage.AppendLine("        TSC.playerConfiguration.setIsSearchable(true);");
+			playerPage.AppendLine("        TSC.playerConfiguration.setEndActionType(\"stop\");");
+			playerPage.AppendLine("        TSC.playerConfiguration.setEndActionParam(\"true\");");
+			playerPage.AppendLine("        TSC.playerConfiguration.setAllowRewind(-1);");
+			playerPage.AppendLine("");
+			playerPage.AppendLine("");
+			playerPage.AppendLine("        TSC.localizationStrings.setLanguage(TSC.languageCodes.ENGLISH);");
+			playerPage.AppendLine("");
+			playerPage.AppendLine("        TSC.mediaPlayer.init(\"#tscVideoContent\");");
+			playerPage.AppendLine("      }");
+			playerPage.AppendLine("");
+			playerPage.AppendLine("      function loadScript(e, t) { if (!e || !(typeof e === \"string\")) { return } var n = document.createElement(\"script\"); if (typeof document.attachEvent === \"object\") { n.onreadystatechange = function () { if (n.readyState === \"complete\" || n.readyState === \"loaded\") { if (t) { t() } } } } else { n.onload = function () { if (t) { t() } } } n.src = e; document.getElementsByTagName(\"head\")[0].appendChild(n) }");
+			playerPage.AppendLine("");
+			playerPage.AppendLine("      loadScript('https://greeneventstechnology.azureedge.net/cpl20/js/techsmith-smart-player.min.js', function () {");
+			playerPage.AppendLine("        setup(window[\"TSC\"]);");
+			playerPage.AppendLine("      });");
+			playerPage.AppendLine("    }(window));");
+			playerPage.AppendLine("  </script>");
+			playerPage.AppendLine("</body>");
+			playerPage.AppendLine("</html>");
+			return playerPage.ToString();
+		}
+
+		private static string BuildConfigXML(Session session)
+		{
+			var configXML = new StringBuilder();
+			configXML.AppendLine("<x:xmpmeta tsc:version=\"2.0.1\" xmlns:x=\"adobe:ns:meta/\" xmlns:tsc=\"http://www.techsmith.com/xmp/tsc/\">");
+			configXML.AppendLine("   <rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:xmp=\"http://ns.adobe.com/xap/1.0/\" xmlns:xmpDM=\"http://ns.adobe.com/xmp/1.0/DynamicMedia/\" xmlns:xmpG=\"http://ns.adobe.com/xap/1.0/g/\" xmlns:xmpMM=\"http://ns.adobe.com/xap/1.0/mm/\" xmlns:tscDM=\"http://www.techsmith.com/xmp/tscDM/\" xmlns:tscIQ=\"http://www.techsmith.com/xmp/tscIQ/\" xmlns:tscHS=\"http://www.techsmith.com/xmp/tscHS/\" xmlns:stDim=\"http://ns.adobe.com/xap/1.0/sType/Dimensions#\" xmlns:stFnt=\"http://ns.adobe.com/xap/1.0/sType/Font#\" xmlns:exif=\"http://ns.adobe.com/exif/1.0\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\">");
+			configXML.AppendLine($"      <rdf:Description dc:date=\"{DateTime.UtcNow:yyyy-MM-dd hh:mm:ss tt}\" dc:source=\"Camtasia,20.0.7,enu\" dc:title=\"{session.Id}\" tscDM:firstFrame=\"https://greeneventstechnology.azureedge.net/cpl20/thumbnails/{session.Id}.jpg\" tscDM:originId=\"F02DFD84-CD76-4FF1-B6E7-7636DA8D96AA\" tscDM:project=\"{session.Id}\">");
+			configXML.AppendLine("         <xmpDM:duration xmpDM:scale=\"1/1000\" xmpDM:value=\"2413716\"/>");
+			configXML.AppendLine("         <xmpDM:videoFrameSize stDim:unit=\"pixel\" stDim:h=\"720\" stDim:w=\"1280\"/>");
+			configXML.AppendLine("         <tsc:langName>");
+			configXML.AppendLine("            <rdf:Bag>");
+			configXML.AppendLine("               <rdf:li xml:lang=\"en-US\">English</rdf:li></rdf:Bag>");
+			configXML.AppendLine("         </tsc:langName>");
+			configXML.AppendLine("         <xmpDM:Tracks>");
+			configXML.AppendLine("            <rdf:Bag>");
+			configXML.AppendLine("            </rdf:Bag>");
+			configXML.AppendLine("         </xmpDM:Tracks>");
+			configXML.AppendLine("         <tscDM:controller>");
+			configXML.AppendLine("            <rdf:Description xmpDM:name=\"tscplayer\">");
+			configXML.AppendLine("               <tscDM:parameters>");
+			configXML.AppendLine("                  <rdf:Bag>");
+			configXML.AppendLine("                     <rdf:li xmpDM:name=\"autohide\" xmpDM:value=\"true\"/><rdf:li xmpDM:name=\"autoplay\" xmpDM:value=\"false\"/><rdf:li xmpDM:name=\"loop\" xmpDM:value=\"false\"/><rdf:li xmpDM:name=\"searchable\" xmpDM:value=\"true\"/><rdf:li xmpDM:name=\"captionsenabled\" xmpDM:value=\"false\"/><rdf:li xmpDM:name=\"sidebarenabled\" xmpDM:value=\"false\"/><rdf:li xmpDM:name=\"unicodeenabled\" xmpDM:value=\"false\"/><rdf:li xmpDM:name=\"backgroundcolor\" xmpDM:value=\"000000\"/><rdf:li xmpDM:name=\"sidebarlocation\" xmpDM:value=\"left\"/><rdf:li xmpDM:name=\"endaction\" xmpDM:value=\"stop\"/><rdf:li xmpDM:name=\"endactionparam\" xmpDM:value=\"true\"/><rdf:li xmpDM:name=\"locale\" xmpDM:value=\"en-US\"/></rdf:Bag>");
+			configXML.AppendLine("               </tscDM:parameters>");
+			configXML.AppendLine("               <tscDM:controllerText>");
+			configXML.AppendLine("                  <rdf:Bag>");
+			configXML.AppendLine("                  </rdf:Bag>");
+			configXML.AppendLine("               </tscDM:controllerText>");
+			configXML.AppendLine("            </rdf:Description>");
+			configXML.AppendLine("         </tscDM:controller>");
+			configXML.AppendLine("         <tscDM:contentList>");
+			configXML.AppendLine("            <rdf:Description>");
+			configXML.AppendLine("               <tscDM:files>");
+			configXML.AppendLine("                  <rdf:Seq>");
+			configXML.AppendLine($"                     <rdf:li xmpDM:name=\"0\" xmpDM:value=\"{session.Id}.mp4\"/><rdf:li xmpDM:name=\"1\" xmpDM:value=\"https://greeneventstechnology.azureedge.net/cpl20/thumbnails/{session.Id}.jpg\"/><rdf:li xmpDM:name=\"2\" xmpDM:value=\"https://greeneventstechnology.azureedge.net/cpl20/thumbnails/{session.Id}.jpg\"/></rdf:Seq>");
+			configXML.AppendLine("               </tscDM:files>");
+			configXML.AppendLine("            </rdf:Description>");
+			configXML.AppendLine("         </tscDM:contentList>");
+			configXML.AppendLine("      </rdf:Description>");
+			configXML.AppendLine("   </rdf:RDF>");
+			configXML.AppendLine("</x:xmpmeta>");
+			return configXML.ToString();
+		}
+
+		private static string BuildConfigXMLJs(Session session)
+		{
+			var js = new StringBuilder();
+			js.AppendLine("var TSC = TSC || {};");
+			js.AppendLine("");
+			js.AppendLine("TSC.embedded_config_xml = '<x:xmpmeta tsc:version=\"2.0.1\" xmlns:x=\"adobe:ns:meta/\" xmlns:tsc=\"http://www.techsmith.com/xmp/tsc/\">\\");
+			js.AppendLine("   <rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:xmp=\"http://ns.adobe.com/xap/1.0/\" xmlns:xmpDM=\"http://ns.adobe.com/xmp/1.0/DynamicMedia/\" xmlns:xmpG=\"http://ns.adobe.com/xap/1.0/g/\" xmlns:xmpMM=\"http://ns.adobe.com/xap/1.0/mm/\" xmlns:tscDM=\"http://www.techsmith.com/xmp/tscDM/\" xmlns:tscIQ=\"http://www.techsmith.com/xmp/tscIQ/\" xmlns:tscHS=\"http://www.techsmith.com/xmp/tscHS/\" xmlns:stDim=\"http://ns.adobe.com/xap/1.0/sType/Dimensions#\" xmlns:stFnt=\"http://ns.adobe.com/xap/1.0/sType/Font#\" xmlns:exif=\"http://ns.adobe.com/exif/1.0\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\\");
+			js.AppendLine($"      <rdf:Description dc:date=\"2020-09-03 10:27:14 PM\" dc:source=\"Camtasia,20.0.7,enu\" dc:title=\"1658\" tscDM:firstFrame=\"https://greeneventstechnology.azureedge.net/cpl20/thumbnails/{session.Id}.jpg\" tscDM:originId=\"F02DFD84-CD76-4FF1-B6E7-7636DA8D96AA\" tscDM:project=\"{session.Id}\">\\");
+			js.AppendLine("         <xmpDM:duration xmpDM:scale=\"1/1000\" xmpDM:value=\"2413716\"/>\\");
+			js.AppendLine("         <xmpDM:videoFrameSize stDim:unit=\"pixel\" stDim:h=\"720\" stDim:w=\"1280\"/>\\");
+			js.AppendLine("         <tsc:langName>\\");
+			js.AppendLine("            <rdf:Bag>\\");
+			js.AppendLine("               <rdf:li xml:lang=\"en-US\">English</rdf:li></rdf:Bag>\\");
+			js.AppendLine("         </tsc:langName>\\");
+			js.AppendLine("         <xmpDM:Tracks>\\");
+			js.AppendLine("            <rdf:Bag>\\");
+			js.AppendLine("            </rdf:Bag>\\");
+			js.AppendLine("         </xmpDM:Tracks>\\");
+			js.AppendLine("         <tscDM:controller>\\");
+			js.AppendLine("            <rdf:Description xmpDM:name=\"tscplayer\">\\");
+			js.AppendLine("               <tscDM:parameters>\\");
+			js.AppendLine("                  <rdf:Bag>\\");
+			js.AppendLine("                     <rdf:li xmpDM:name=\"autohide\" xmpDM:value=\"true\"/><rdf:li xmpDM:name=\"autoplay\" xmpDM:value=\"false\"/><rdf:li xmpDM:name=\"loop\" xmpDM:value=\"false\"/><rdf:li xmpDM:name=\"searchable\" xmpDM:value=\"true\"/><rdf:li xmpDM:name=\"captionsenabled\" xmpDM:value=\"false\"/><rdf:li xmpDM:name=\"sidebarenabled\" xmpDM:value=\"false\"/><rdf:li xmpDM:name=\"unicodeenabled\" xmpDM:value=\"false\"/><rdf:li xmpDM:name=\"backgroundcolor\" xmpDM:value=\"000000\"/><rdf:li xmpDM:name=\"sidebarlocation\" xmpDM:value=\"left\"/><rdf:li xmpDM:name=\"endaction\" xmpDM:value=\"stop\"/><rdf:li xmpDM:name=\"endactionparam\" xmpDM:value=\"true\"/><rdf:li xmpDM:name=\"locale\" xmpDM:value=\"en-US\"/></rdf:Bag>\\");
+			js.AppendLine("               </tscDM:parameters>\\");
+			js.AppendLine("               <tscDM:controllerText>\\");
+			js.AppendLine("                  <rdf:Bag>\\");
+			js.AppendLine("                  </rdf:Bag>\\");
+			js.AppendLine("               </tscDM:controllerText>\\");
+			js.AppendLine("            </rdf:Description>\\");
+			js.AppendLine("         </tscDM:controller>\\");
+			js.AppendLine("         <tscDM:contentList>\\");
+			js.AppendLine("            <rdf:Description>\\");
+			js.AppendLine("               <tscDM:files>\\");
+			js.AppendLine("                  <rdf:Seq>\\");
+			js.AppendLine($"                     <rdf:li xmpDM:name=\"0\" xmpDM:value=\"1658.mp4\"/><rdf:li xmpDM:name=\"1\" xmpDM:value=\"https://greeneventstechnology.azureedge.net/cpl20/thumbnails/{session.Id}.jpg\"/><rdf:li xmpDM:name=\"2\" xmpDM:value=\"https://greeneventstechnology.azureedge.net/cpl20/thumbnails/{session.Id}.jpg\"/></rdf:Seq>\\");
+			js.AppendLine("               </tscDM:files>\\");
+			js.AppendLine("            </rdf:Description>\\");
+			js.AppendLine("         </tscDM:contentList>\\");
+			js.AppendLine("      </rdf:Description>\\");
+			js.AppendLine("   </rdf:RDF>\\");
+			js.AppendLine("</x:xmpmeta>';");
+			return js.ToString();
+		}
+
+		public static async Task UploadVideoAsync(int sessionId, string filePath, BlobContainerClient container)
+		{
+			BlobClient blob = container.GetBlobClient($"videos/{sessionId}.mp4");
+			using FileStream uploadFileStream = File.OpenRead($@"{filePath}\{sessionId}.mp4");
+			await blob.UploadAsync(uploadFileStream, new BlobHttpHeaders { ContentType = "video/mp4" }, conditions: null).ConfigureAwait(true);
 		}
 
 	}
