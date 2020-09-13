@@ -51,6 +51,7 @@ namespace CPL20Archive
 			}
 
 			app.UseHttpsRedirection();
+			app.UseDefaultFiles();
 			app.UseStaticFiles();
 
 			app.UseRouting();

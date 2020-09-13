@@ -22,6 +22,17 @@ namespace CPL20ArchiveBuilder
 			var blobServiceClient = new BlobServiceClient(Settings.StorageConnectionString);
 			var blobContainerClient = blobServiceClient.GetBlobContainerClient("cpl20");
 
+			var logFileLocation = @"D:\Temp\CPL20Uploads.txt";
+			var alreadyUploadedVideos = new List<int>();
+			if (File.Exists(logFileLocation))
+			{
+				string line;
+				StreamReader file = new StreamReader(logFileLocation);
+				while ((line = file.ReadLine()) != null)
+					if (int.TryParse(line, out var uploadedSessionId))
+						alreadyUploadedVideos.Add(uploadedSessionId);
+			}
+
 			var speakers = Speakers.GetSpeakersForEvent(10, sqlConnection);
 			var sessions = Session.GetSessionForEvent(10, sqlConnection, speakers);
 			var sessionTags = SessionTags.GetTags(sqlConnection);
@@ -33,7 +44,6 @@ namespace CPL20ArchiveBuilder
 			var outputPath = @"D:\Repros\TaleLearnCode\CPL20ArchiveSite\src\CPL20Archive\wwwroot\";
 			foreach (string sessionPeriodPath in Directory.GetDirectories(rootDirectory))
 			{
-				//Console.WriteLine(sessionPeriodPath);
 				foreach (string sessionPath in Directory.GetDirectories(sessionPeriodPath))
 				{
 					var sessionPathComponents = sessionPath.Split('\\');
@@ -41,7 +51,8 @@ namespace CPL20ArchiveBuilder
 					{
 						var session = sessions[Convert.ToInt32(sessionPathComponents[sessionPathComponents.Length - 1])];
 						Console.WriteLine($"Uploading MP4 for Session {session.Id}");
-						await UploadVideoAsync(session.Id, sessionPath, blobContainerClient);
+						if (!alreadyUploadedVideos.Contains(session.Id))
+							await UploadVideoAsync(session.Id, sessionPath, blobContainerClient);
 						var path = $@"{outputPath}sessions\{session.Id}\";
 						Directory.CreateDirectory(path);
 						Console.WriteLine($"Writing session pages for Session {session.Id}");
@@ -53,8 +64,6 @@ namespace CPL20ArchiveBuilder
 					}
 				}
 			}
-
-
 
 			sqlConnection.Close();
 
@@ -166,11 +175,12 @@ namespace CPL20ArchiveBuilder
 			indexPage.AppendLine("          </aside>");
 			indexPage.AppendLine("        </div>");
 			indexPage.AppendLine("        <div class=\"span9\">");
+			indexPage.AppendLine($"          <h2 id=\"MainContent_MainContent_SessionTitle\" class=\"SessionDetails\">{session.Title}</h3>");
+			indexPage.AppendLine($"          <h5 id=\"MainContent_MainContent_SessionType\" class=\"SessionDetails\">{session.SessionType}</h4>");
+			indexPage.AppendLine("          <br />");
 			indexPage.AppendLine("          <div class=\"smart-player-embed-container\">");
 			indexPage.AppendLine("            <iframe class=\"smart-player-embed-iframe\" id=\"embeddedSmartPlayerInstance\" src=\"player.html\" scrolling=\"no\" frameborder=\"0\" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>");
 			indexPage.AppendLine("          </div>");
-			indexPage.AppendLine($"          <h3 id=\"MainContent_MainContent_SessionTitle\" class=\"SessionDetails\">{session.Title}</h3>");
-			indexPage.AppendLine($"          <h4 id=\"MainContent_MainContent_SessionType\" class=\"SessionDetails\">{session.SessionType}</h4>");
 			indexPage.AppendLine($"          {session.Abstract}");
 			indexPage.AppendLine("          <hr />");
 			indexPage.AppendLine("          <div class=\"row row-wrap\">");
