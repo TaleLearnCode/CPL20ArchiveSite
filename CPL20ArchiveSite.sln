@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30428.66
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CPL20Archive", "src\CPL20Archive\CPL20Archive.csproj", "{7538AA07-45C1-4E1F-95E8-CB6F4A8F4F79}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CPL20ArchiveBuilder", "src\CPL20ArchiveBuilder\CPL20ArchiveBuilder.csproj", "{9E37CE96-9C13-4760-9603-EA274F7EE066}"
 EndProject
 Global
@@ -13,10 +11,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7538AA07-45C1-4E1F-95E8-CB6F4A8F4F79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7538AA07-45C1-4E1F-95E8-CB6F4A8F4F79}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7538AA07-45C1-4E1F-95E8-CB6F4A8F4F79}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7538AA07-45C1-4E1F-95E8-CB6F4A8F4F79}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9E37CE96-9C13-4760-9603-EA274F7EE066}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9E37CE96-9C13-4760-9603-EA274F7EE066}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9E37CE96-9C13-4760-9603-EA274F7EE066}.Release|Any CPU.ActiveCfg = Release|Any CPU
