@@ -1,5 +1,6 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using Microsoft.Extensions.Azure;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -23,19 +24,21 @@ namespace CPL20ArchiveBuilder
 			var blobContainerClient = blobServiceClient.GetBlobContainerClient("cpl20");
 
 			var logFileLocation = @"D:\Temp\CPL20Uploads.txt";
-			var alreadyUploadedVideos = new List<int>();
+			var alreadyUploadedVideos = new List<string>();
 			if (File.Exists(logFileLocation))
 			{
 				string line;
-				StreamReader file = new StreamReader(logFileLocation);
+				using StreamReader file = new StreamReader(logFileLocation);
 				while ((line = file.ReadLine()) != null)
 					if (int.TryParse(line, out var uploadedSessionId))
-						alreadyUploadedVideos.Add(uploadedSessionId);
+						alreadyUploadedVideos.Add(line);
 			}
 
 			var speakers = Speakers.GetSpeakersForEvent(10, sqlConnection);
 			var sessions = Session.GetSessionForEvent(10, sqlConnection, speakers);
 			var sessionTags = SessionTags.GetTags(sqlConnection);
+
+			sqlConnection.Close();
 
 			Console.Clear();
 			Console.WriteLine("Building session pages...");
@@ -51,8 +54,11 @@ namespace CPL20ArchiveBuilder
 					{
 						var session = sessions[Convert.ToInt32(sessionPathComponents[sessionPathComponents.Length - 1])];
 						Console.WriteLine($"Uploading MP4 for Session {session.Id}");
-						if (!alreadyUploadedVideos.Contains(session.Id))
-							await UploadVideoAsync(session.Id, sessionPath, blobContainerClient);
+						//if (!alreadyUploadedVideos.Contains(session.Id.ToString()))
+						//{
+						//	await UploadVideoAsync(session.Id, sessionPath, blobContainerClient);
+						//	alreadyUploadedVideos.Add(session.Id);
+						//}
 						var path = $@"{outputPath}sessions\{session.Id}\";
 						Directory.CreateDirectory(path);
 						Console.WriteLine($"Writing session pages for Session {session.Id}");
@@ -65,7 +71,12 @@ namespace CPL20ArchiveBuilder
 				}
 			}
 
-			sqlConnection.Close();
+			File.WriteAllLines(logFileLocation, alreadyUploadedVideos.ToArray());
+
+
+
+
+
 
 		}
 
@@ -413,7 +424,220 @@ namespace CPL20ArchiveBuilder
 			return js.ToString();
 		}
 
-		public static async Task UploadVideoAsync(int sessionId, string filePath, BlobContainerClient container)
+		private static string BuildSchedulePageHeader(int sessionPeriodId)
+		{
+			var header = new StringBuilder();
+			header.AppendLine("<div class=\"top-title-area bg-img-charcoal-eticket\">");
+			header.AppendLine("  <div class=\"container\">");
+			header.AppendLine("    <h1 class=\"title-page\">Schedule</h1>");
+			header.AppendLine("  </div>");
+			header.AppendLine("</div>");
+			header.AppendLine("<div class=\"gap\"></div>");
+			header.AppendLine("<div class=\"container\">");
+			header.AppendLine("  <div class=\"demo-buttons\">");
+			if (sessionPeriodId == 105)
+				header.AppendLine("    <a asp-page=\"ScheduleWS\" class=\"btn\">Workshops</a>");
+			else
+				header.AppendLine("    <a asp-page=\"ScheduleWS\" class=\"btn\">Workshops</a>");
+			if (sessionPeriodId == 108)
+				header.AppendLine("    <a asp-page=\"ScheduleWS\" class=\"btn\">Session Period 1</a>");
+			else
+				header.AppendLine("    <a asp-page=\"ScheduleWS\" class=\"btn\">Session Period 1</a>");
+			if (sessionPeriodId == 109)
+				header.AppendLine("    <a asp-page=\"ScheduleWS\" class=\"btn\">Session Period 2</a>");
+			else
+				header.AppendLine("    <a asp-page=\"ScheduleWS\" class=\"btn\">Session Period 2</a>");
+			if (sessionPeriodId == 110)
+				header.AppendLine("    <a asp-page=\"ScheduleWS\" class=\"btn\">Session Period 3</a>");
+			else
+				header.AppendLine("    <a asp-page=\"ScheduleWS\" class=\"btn\">Session Period 3</a>");
+			if (sessionPeriodId == 111)
+				header.AppendLine("    <a asp-page=\"ScheduleWS\" class=\"btn\">Session Period 4</a>");
+			else
+				header.AppendLine("    <a asp-page=\"ScheduleWS\" class=\"btn\">Session Period 4</a>");
+			if (sessionPeriodId == 112)
+				header.AppendLine("    <a asp-page=\"ScheduleWS\" class=\"btn\">Session Period 5</a>");
+			else
+				header.AppendLine("    <a asp-page=\"ScheduleWS\" class=\"btn\">Session Period 5</a>");
+			if (sessionPeriodId == 113)
+				header.AppendLine("    <a asp-page=\"ScheduleWS\" class=\"btn\">Session Period 6</a>");
+			else
+				header.AppendLine("    <a asp-page=\"ScheduleWS\" class=\"btn\">Session Period 6</a>");
+			if (sessionPeriodId == 114)
+				header.AppendLine("    <a asp-page=\"ScheduleWS\" class=\"btn\">Session Period 7</a>");
+			else
+				header.AppendLine("    <a asp-page=\"ScheduleWS\" class=\"btn\">Session Period 7</a>");
+			if (sessionPeriodId == 115)
+				header.AppendLine("    <a asp-page=\"ScheduleWS\" class=\"btn\">Session Period 8</a>");
+			else
+				header.AppendLine("    <a asp-page=\"ScheduleWS\" class=\"btn\">Session Period 8</a>");
+			if (sessionPeriodId == 116)
+				header.AppendLine("    <a asp-page=\"ScheduleWS\" class=\"btn\">Session Period 9</a>");
+			else
+				header.AppendLine("    <a asp-page=\"ScheduleWS\" class=\"btn\">Session Period 9</a>");
+			if (sessionPeriodId == 117)
+				header.AppendLine("    <a asp-page=\"ScheduleWS\" class=\"btn\">Session Period 10</a>");
+			else
+				header.AppendLine("    <a asp-page=\"ScheduleWS\" class=\"btn\">Session Period 10</a>");
+			if (sessionPeriodId == 118)
+				header.AppendLine("    <a asp-page=\"ScheduleWS\" class=\"btn\">Session Period 11</a>");
+			else
+				header.AppendLine("    <a asp-page=\"ScheduleWS\" class=\"btn\">Session Period 11</a>");
+			if (sessionPeriodId == 119)
+				header.AppendLine("    <a asp-page=\"ScheduleWS\" class=\"btn\">Keynote</a>");
+			else
+				header.AppendLine("    <a asp-page=\"ScheduleWS\" class=\"btn\">Keynote</a>");
+			header.AppendLine("  </div>");
+			header.AppendLine("  <div class=\"gap\"></div>");
+			return header.ToString();
+		}
+
+		private static void BuildSchedulePages(List<Session> sessions, string outputPath)
+		{
+
+			var sessionPeriodPages = new Dictionary<int, StringBuilder>();
+			sessionPeriodPages.Add(105, new StringBuilder(BuildSchedulePageHeader(105)));
+			sessionPeriodPages.Add(108, new StringBuilder(BuildSchedulePageHeader(108)));
+			sessionPeriodPages.Add(109, new StringBuilder(BuildSchedulePageHeader(109)));
+			sessionPeriodPages.Add(110, new StringBuilder(BuildSchedulePageHeader(110)));
+			sessionPeriodPages.Add(111, new StringBuilder(BuildSchedulePageHeader(111)));
+			sessionPeriodPages.Add(112, new StringBuilder(BuildSchedulePageHeader(112)));
+			sessionPeriodPages.Add(113, new StringBuilder(BuildSchedulePageHeader(113)));
+			sessionPeriodPages.Add(114, new StringBuilder(BuildSchedulePageHeader(114)));
+			sessionPeriodPages.Add(115, new StringBuilder(BuildSchedulePageHeader(115)));
+			sessionPeriodPages.Add(116, new StringBuilder(BuildSchedulePageHeader(116)));
+			sessionPeriodPages.Add(117, new StringBuilder(BuildSchedulePageHeader(117)));
+			sessionPeriodPages.Add(118, new StringBuilder(BuildSchedulePageHeader(118)));
+			sessionPeriodPages.Add(119, new StringBuilder(BuildSchedulePageHeader(119)));
+
+			foreach (var session in sessions)
+			{
+				var sessionListing = new StringBuilder();
+				sessionListing.AppendLine("  <div class=\"row\">");
+				sessionListing.AppendLine("    <div class=\"span4\">");
+				sessionListing.AppendLine($"      <a asp-page=\"{session.Id}\">");
+				sessionListing.AppendLine($"        <img style=\"width: 320px; height: 180px\" src=\"https://greeneventstechnology.azureedge.net/cpl20/thumbnails/{session.SessionPeriodId}.jpg\" />");
+				sessionListing.AppendLine("       </a>");
+				sessionListing.AppendLine("    </div>");
+				sessionListing.AppendLine("    <div class=\"span8\">");
+				sessionListing.AppendLine($"      <a asp-page=\"{session.Id}\">");
+				sessionListing.AppendLine($"      <h3>{session.Title}</h3>");
+				sessionListing.AppendLine($"        {session.Summary}");
+				sessionListing.AppendLine("       </a>");
+				sessionListing.AppendLine("    </div>");
+				sessionListing.AppendLine("  </div>");
+				sessionListing.AppendLine("  <hr />");
+				sessionPeriodPages[session.SessionPeriodId].Append(sessionListing.ToString());
+			}
+
+			foreach (var sessionPeriodPage in sessionPeriodPages)
+			{
+				sessionPeriodPage.Value.AppendLine("</div>");
+				var path = $@"{outputPath}sessions\Schedule";
+				if (sessionPeriodPage.Key == 105)
+					File.WriteAllText($"{path}WS.cshtml", sessionPeriodPage.ToString());
+
+				if (sessionPeriodPage.Key == 108)
+				{
+					File.WriteAllText($"{path}01.cshtml", sessionPeriodPage.ToString());
+					File.WriteAllText($"{path}01.cs", GetCSFile("sessions", "Schedule01"));
+				}
+				if (sessionPeriodPage.Key == 109)
+				{
+					File.WriteAllText($"{path}02.cshtml", sessionPeriodPage.ToString());
+					File.WriteAllText($"{path}02.cs", GetCSFile("sessions", "Schedule01"));
+				}
+				if (sessionPeriodPage.Key == 110)
+				{
+					File.WriteAllText($"{path}03.cshtml", sessionPeriodPage.ToString());
+					File.WriteAllText($"{path}03.cs", GetCSFile("sessions", "Schedule01"));
+				}
+				if (sessionPeriodPage.Key == 111)
+				{
+					File.WriteAllText($"{path}04.cshtml", sessionPeriodPage.ToString());
+					File.WriteAllText($"{path}04.cs", GetCSFile("sessions", "Schedule01"));
+				}
+				if (sessionPeriodPage.Key == 112)
+				{
+					File.WriteAllText($"{path}05.cshtml", sessionPeriodPage.ToString());
+					File.WriteAllText($"{path}05.cs", GetCSFile("sessions", "Schedule01"));
+				}
+				if (sessionPeriodPage.Key == 113)
+				{
+					File.WriteAllText($"{path}06.cshtml", sessionPeriodPage.ToString());
+					File.WriteAllText($"{path}06.cs", GetCSFile("sessions", "Schedule01"));
+				}
+				if (sessionPeriodPage.Key == 114)
+				{
+					File.WriteAllText($"{path}07.cshtml", sessionPeriodPage.ToString());
+					File.WriteAllText($"{path}07.cs", GetCSFile("sessions", "Schedule01"));
+				}
+				if (sessionPeriodPage.Key == 115)
+				{
+					File.WriteAllText($"{path}08.cshtml", sessionPeriodPage.ToString());
+					File.WriteAllText($"{path}08.cs", GetCSFile("sessions", "Schedule01"));
+				}
+				if (sessionPeriodPage.Key == 116)
+				{
+					File.WriteAllText($"{path}09.cshtml", sessionPeriodPage.ToString());
+					File.WriteAllText($"{path}09.cs", GetCSFile("sessions", "Schedule01"));
+				}
+				if (sessionPeriodPage.Key == 117)
+				{
+					File.WriteAllText($"{path}10.cshtml", sessionPeriodPage.ToString());
+					File.WriteAllText($"{path}10.cs", GetCSFile("sessions", "Schedule01"));
+				}
+				if (sessionPeriodPage.Key == 118)
+				{
+					File.WriteAllText($"{path}11.cshtml", sessionPeriodPage.ToString());
+					File.WriteAllText($"{path}11.cs", GetCSFile("sessions", "Schedule01"));
+				}
+				if (sessionPeriodPage.Key == 119)
+				{
+					File.WriteAllText($"{path}KN.cshtml", sessionPeriodPage.ToString());
+					File.WriteAllText($"{path}KN.cs", GetCSFile("sessions", "Schedule01"));
+				}
+			}
+
+		}
+
+		private static string GetCSFile(string pageFolder, string pageName)
+		{
+			var csFile = new StringBuilder();
+			csFile.AppendLine("using Microsoft.AspNetCore.Mvc.RazorPages;");
+			csFile.AppendLine($"namespace CPL20Archive.Pages.{pageFolder}");
+			csFile.AppendLine("{");
+			csFile.AppendLine($"	public class {pageName}Model : PageModel");
+			csFile.AppendLine("	{");
+			csFile.AppendLine("		public void OnGet()");
+			csFile.AppendLine("		{");
+			csFile.AppendLine("		}");
+			csFile.AppendLine("	}");
+			csFile.AppendLine("}");
+			return csFile.ToString();
+		}
+
+		private static Dictionary<int, string> GetSessionPeriods()
+		{
+			return new Dictionary<int, string>()
+			{
+				{ 105, "Workshops" },
+				{ 108, "Session Period 1" },
+				{ 109, "Session Period 2" },
+				{ 110, "Session Period 3" },
+				{ 111, "Session Period 4" },
+				{ 112, "Session Period 5" },
+				{ 113, "Session Period 6" },
+				{ 114, "Session Period 7" },
+				{ 115, "Session Period 8" },
+				{ 116, "Session Period 9" },
+				{ 117, "Session Period 10" },
+				{ 118, "Session Period 11" },
+				{ 119, "Keynote" }
+			};
+		}
+
+		public static async Task UploadVideoAsync(string sessionId, string filePath, BlobContainerClient container)
 		{
 			BlobClient blob = container.GetBlobClient($"videos/{sessionId}.mp4");
 			using FileStream uploadFileStream = File.OpenRead($@"{filePath}\{sessionId}.mp4");

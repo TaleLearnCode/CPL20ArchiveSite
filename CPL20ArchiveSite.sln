@@ -5,6 +5,23 @@ VisualStudioVersion = 16.0.30428.66
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CPL20ArchiveBuilder", "src\CPL20ArchiveBuilder\CPL20ArchiveBuilder.csproj", "{9E37CE96-9C13-4760-9603-EA274F7EE066}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CPL20Archive", "src\CPL20Archive\CPL20Archive.csproj", "{1D97A6F7-8CBC-4D05-8871-C54DA28F052A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL", "SQL", "{FDA81906-7B5B-4E8D-B160-412E7F134EFE}"
+	ProjectSection(SolutionItems) = preProject
+		src\SQL\uspRetreiveSocialMediaProviderBaseURL.sql = src\SQL\uspRetreiveSocialMediaProviderBaseURL.sql
+		src\SQL\uspRetrieveSession.sql = src\SQL\uspRetrieveSession.sql
+		src\SQL\uspRetrieveSessions.sql = src\SQL\uspRetrieveSessions.sql
+		src\SQL\uspRetrieveSessionTags.sql = src\SQL\uspRetrieveSessionTags.sql
+		src\SQL\uspRetrieveSessionTopics.sql = src\SQL\uspRetrieveSessionTopics.sql
+		src\SQL\uspRetrieveSocialMediaForSpeaker.sql = src\SQL\uspRetrieveSocialMediaForSpeaker.sql
+		src\SQL\uspRetrieveSpeakerIdsForSession.sql = src\SQL\uspRetrieveSpeakerIdsForSession.sql
+		src\SQL\uspRetrieveSpeakersForEvent.sql = src\SQL\uspRetrieveSpeakersForEvent.sql
+		src\SQL\uspRetrieveSpeakersForSession.sql = src\SQL\uspRetrieveSpeakersForSession.sql
+		src\SQL\uspRetrieveTags.sql = src\SQL\uspRetrieveTags.sql
+		src\SQL\uspRetrieveWebsitesForSpeaker.sql = src\SQL\uspRetrieveWebsitesForSpeaker.sql
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +32,10 @@ Global
 		{9E37CE96-9C13-4760-9603-EA274F7EE066}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9E37CE96-9C13-4760-9603-EA274F7EE066}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9E37CE96-9C13-4760-9603-EA274F7EE066}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D97A6F7-8CBC-4D05-8871-C54DA28F052A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D97A6F7-8CBC-4D05-8871-C54DA28F052A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D97A6F7-8CBC-4D05-8871-C54DA28F052A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D97A6F7-8CBC-4D05-8871-C54DA28F052A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

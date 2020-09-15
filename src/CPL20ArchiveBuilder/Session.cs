@@ -20,6 +20,8 @@ namespace CPL20ArchiveBuilder
 
 		public string SessionLevel { get; private set; }
 
+		public int SessionPeriodId { get; set; }
+
 		public SessionTopics Topics { get; } = new SessionTopics();
 
 		public SessionTags Tags { get; } = new SessionTags();
@@ -39,7 +41,7 @@ namespace CPL20ArchiveBuilder
 				CommandText = "uspRetrieveSessions"
 			};
 			sqlCommand.Parameters.AddWithValue("@EventId", eventId);
-			const int sessionIdIndex = 0; const int titleIndex = 1; const int abstractIndex = 2; const int sessionLevelIndex = 3; const int sessionTypeIndex = 4;
+			const int sessionIdIndex = 0; const int titleIndex = 1; const int abstractIndex = 2; const int sessionPeriodIdIndex = 3; const int sessionLevelIndex = 4; const int sessionTypeIndex = 5;
 			using SqlDataReader reader = sqlCommand.ExecuteReader();
 			if (reader.HasRows)
 			{
@@ -51,8 +53,11 @@ namespace CPL20ArchiveBuilder
 						Title = reader.GetString(titleIndex),
 						Abstract = reader.GetString(abstractIndex),
 						SessionLevel = reader.GetString(sessionLevelIndex),
-						SessionType = reader.GetString(sessionTypeIndex)
+						SessionType = reader.GetString(sessionTypeIndex),
+						SessionPeriodId = reader.GetInt32(sessionPeriodIdIndex)
 					};
+					if (session.SessionPeriodId == 106 || session.SessionPeriodId == 107 || session.SessionPeriodId == 120)
+						session.SessionPeriodId = 105;
 					foreach (var speakerId in Speakers.GetSpeakerIdsForSession(session.Id, sqlConnection))
 						session.SessionSpeakers.Add(eventSpeakers[speakerId]);
 					session.Topics.GetSessionTopics(reader.GetInt32(sessionIdIndex), sqlConnection);
