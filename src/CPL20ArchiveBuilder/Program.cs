@@ -56,11 +56,13 @@ namespace CPL20ArchiveBuilder
 					{
 						var session = sessions[Convert.ToInt32(sessionPathComponents[sessionPathComponents.Length - 1])];
 						Console.WriteLine($"Uploading MP4 for Session {session.Id}");
-						//if (!alreadyUploadedVideos.Contains(session.Id.ToString()))
+						//if (!alreadyUploadedVideos.Contains(session.Id.ToString()) && (session.Id != 1779 || session.Id != 1721))
 						//{
 						//	await UploadVideoAsync(session.Id, sessionPath, blobContainerClient);
-						//	alreadyUploadedVideos.Add(session.Id);
+						//	alreadyUploadedVideos.Add(session.Id.ToString());
 						//}
+						if (session.Id != 1779 || session.Id != 1721)
+							sessions[session.Id].VideoUploaded = true;
 						var path = $@"{pagesPath}sessions\{session.Id}\";
 						Directory.CreateDirectory(path);
 						Console.WriteLine($"Writing session pages for Session {session.Id}");
@@ -428,7 +430,12 @@ namespace CPL20ArchiveBuilder
 					sessionListing.AppendLine($"      <a asp-page=\"/Sessions/{session.Id}/Index\">");
 					sessionListing.AppendLine($"      <h3>{session.Title}</h3>");
 					sessionListing.AppendLine("       </a>");
-					sessionListing.AppendLine($"      {session.Summary}");
+					if (session.Id == 1779 || session.Id == 1721)
+						sessionListing.AppendLine($"      <p>{session.Summary}...<br /><br /><span style=\"background-color:#DF625C;\">&nbsp;Video Not Available&nbsp;</span></p>");
+					else if (session.VideoUploaded)
+						sessionListing.AppendLine($"      <p>{session.Summary}...<br /><br /><span style=\"background-color:#A3CF63;\">&nbsp;Video Available&nbsp;</span></p>");
+					else
+						sessionListing.AppendLine($"      <p>{session.Summary}...<br /><br /><span style=\"background-color:#DF625C;\">&nbsp;Video Not Available Yet&nbsp;</span></p>");
 					sessionListing.AppendLine("    </div>");
 					sessionListing.AppendLine("  </div>");
 					sessionListing.AppendLine("  <hr />");

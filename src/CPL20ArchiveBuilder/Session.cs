@@ -22,6 +22,8 @@ namespace CPL20ArchiveBuilder
 
 		public int SessionPeriodId { get; set; }
 
+		public bool VideoUploaded { get; set; }
+
 		public SessionTopics Topics { get; } = new SessionTopics();
 
 		public SessionTags Tags { get; } = new SessionTags();
