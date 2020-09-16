@@ -41,7 +41,7 @@ namespace CPL20ArchiveBuilder
 				CommandText = "uspRetrieveSessions"
 			};
 			sqlCommand.Parameters.AddWithValue("@EventId", eventId);
-			const int sessionIdIndex = 0; const int titleIndex = 1; const int abstractIndex = 2; const int sessionPeriodIdIndex = 3; const int sessionLevelIndex = 4; const int sessionTypeIndex = 5;
+			const int sessionIdIndex = 0; const int titleIndex = 1; const int abstractIndex = 2; const int summaryIndex = 3; const int sessionPeriodIdIndex = 4; const int sessionLevelIndex = 5; const int sessionTypeIndex = 6;
 			using SqlDataReader reader = sqlCommand.ExecuteReader();
 			if (reader.HasRows)
 			{
@@ -52,6 +52,7 @@ namespace CPL20ArchiveBuilder
 						Id = reader.GetInt32(sessionIdIndex),
 						Title = reader.GetString(titleIndex),
 						Abstract = reader.GetString(abstractIndex),
+						Summary = reader.GetString(summaryIndex),
 						SessionLevel = reader.GetString(sessionLevelIndex),
 						SessionType = reader.GetString(sessionTypeIndex),
 						SessionPeriodId = reader.GetInt32(sessionPeriodIdIndex)

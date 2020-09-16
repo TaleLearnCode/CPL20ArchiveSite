@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace CPL20Archive.Pages.sessions
+namespace CPL20Archive.Pages.Sessions
 {
-	public class IndexModel : PageModel
-	{
-		public void OnGet()
-		{
-		}
-	}
+    public class IndexModel : PageModel
+    {
+        public void OnGet()
+        {
+        }
+    }
 }

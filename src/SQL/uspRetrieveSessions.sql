@@ -7,6 +7,7 @@ BEGIN
 	SELECT [Session].Id,
 	       [Session].Title,
 				 [Session].Abstract,
+				 [Session].Summary,
 				 [Session].SessionPeriodId,
 				 SessionLevel.Name,
 				 SessionType.Name
