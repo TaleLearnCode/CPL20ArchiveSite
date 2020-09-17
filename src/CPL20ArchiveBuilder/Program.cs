@@ -84,6 +84,7 @@ namespace CPL20ArchiveBuilder
 			}
 
 			BuildSchedulePages(sessions.Values.ToList(), pagesPath);
+			BuildTagPages(sessions.Values.ToList(), sessionTags, pagesPath);
 
 			File.WriteAllLines(logFileLocation, alreadyUploadedVideos.ToArray());
 
@@ -96,7 +97,7 @@ namespace CPL20ArchiveBuilder
 
 		}
 
-		private static string BuildIndexPage(Session session, Dictionary<int, string> tags)
+		private static string BuildIndexPage(Session session, Dictionary<int, (string Name, string NormalizedName)> tags)
 		{
 			var indexPage = new StringBuilder();
 			indexPage.AppendLine("@page");
@@ -336,7 +337,7 @@ namespace CPL20ArchiveBuilder
 			header.AppendLine("}");
 			header.AppendLine("<div class=\"top-title-area bg-img-charcoal-eticket\">");
 			header.AppendLine("  <div class=\"container\">");
-			header.AppendLine("    <h1 class=\"title-page\">Schedule</h1>");
+			header.AppendLine("    <h1 class=\"title-page\">Sessions by Session Period</h1>");
 			header.AppendLine("  </div>");
 			header.AppendLine("</div>");
 			header.AppendLine("<div class=\"gap\"></div>");
@@ -513,6 +514,80 @@ namespace CPL20ArchiveBuilder
 					File.WriteAllText($"{path}KN.cshtml", sessionPeriodPage.Value.ToString());
 					File.WriteAllText($"{path}KN.cshtml.cs", GetCSFile("Sessions", "ScheduleKN"));
 				}
+			}
+
+		}
+
+		private static string BuildTagLink(string pageFileName, string pageName, (string Name, string NormalizedName) selectedTag)
+		{
+			if (pageName == selectedTag.NormalizedName)
+				return $"    <a asp-page=\"{pageFileName}\" class=\"btn btn-info\">{pageName}</a>";
+			else
+				return $"    <a asp-page=\"{pageFileName}\" class=\"btn\">{pageName}</a>";
+		}
+
+		private static string BuildTagsPageHeader((string Name, string NormalizedName) currentTag, List<(string Name, string NormalizedName)> tags)
+		{
+			var header = new StringBuilder();
+			header.AppendLine("@page");
+			header.AppendLine($"@model CPL20Archive.Pages.Sessions.{currentTag.NormalizedName}Model");
+			header.AppendLine("@{");
+			header.AppendLine("}");
+			header.AppendLine("<div class=\"top-title-area bg-img-charcoal-eticket\">");
+			header.AppendLine("  <div class=\"container\">");
+			header.AppendLine("    <h1 class=\"title-page\">Sessions by Tag</h1>");
+			header.AppendLine("  </div>");
+			header.AppendLine("</div>");
+			header.AppendLine("<div class=\"gap\"></div>");
+			header.AppendLine("<div class=\"container\">");
+			header.AppendLine("  <div class=\"demo-buttons\">");
+			foreach (var tag in tags)
+				header.AppendLine(BuildTagLink(tag.NormalizedName, tag.Name, currentTag));
+			header.AppendLine("  </div>");
+			header.AppendLine("  <div class=\"gap\"></div>");
+			return header.ToString();
+		}
+
+		private static void BuildTagPages(List<Session> sessions, Dictionary<int, (string Name, string NormalizedName)> sessionTags, string pagesPath)
+		{
+			var tagPages = new Dictionary<int, StringBuilder>();
+			foreach (var sessionTag in sessionTags)
+				tagPages.Add(sessionTag.Key, new StringBuilder(BuildTagsPageHeader(sessionTag.Value, sessionTags.Values.ToList())));
+
+			foreach (var session in sessions)
+			{
+				foreach (var tag in session.Tags)
+				{
+					var sessionListing = new StringBuilder();
+					sessionListing.AppendLine("  <div class=\"row\">");
+					sessionListing.AppendLine("    <div class=\"span4\">");
+					sessionListing.AppendLine($"      <a asp-page=\"/Sessions/{session.Id}/Index\">");
+					sessionListing.AppendLine($"        <img style=\"width: 320px; height: 180px\" src=\"https://greeneventstechnology.azureedge.net/cpl20/thumbnails/{session.Id}.jpg\" />");
+					sessionListing.AppendLine("       </a>");
+					sessionListing.AppendLine("    </div>");
+					sessionListing.AppendLine("    <div class=\"span8\">");
+					sessionListing.AppendLine($"      <a asp-page=\"/Sessions/{session.Id}/Index\">");
+					sessionListing.AppendLine($"      <h3>{session.Title}</h3>");
+					sessionListing.AppendLine("       </a>");
+					if (session.Id == 1779 || session.Id == 1721)
+						sessionListing.AppendLine($"      <p>{session.Summary}...<br /><br /><span style=\"background-color:#DF625C;foreground-color:#FFFFFF;\">&nbsp;Video Not Available&nbsp;</span></p>");
+					else if (session.VideoUploaded)
+						sessionListing.AppendLine($"      <p>{session.Summary}...<br /><br /><span style=\"background-color:#A3CF63;\">&nbsp;Video Available&nbsp;</span></p>");
+					else
+						sessionListing.AppendLine($"      <p>{session.Summary}...<br /><br /><span style=\"background-color:#DF625C;foreground-color:#FFFFFF;\">&nbsp;Video Not Available Yet&nbsp;</span></p>");
+					sessionListing.AppendLine("    </div>");
+					sessionListing.AppendLine("  </div>");
+					sessionListing.AppendLine("  <hr />");
+					tagPages[tag].Append(sessionListing.ToString());
+				}
+
+			}
+
+			var path = $@"{pagesPath}Sessions\";
+			foreach (var tag in sessionTags)
+			{
+				File.WriteAllText($"{path}{tag.Value.NormalizedName}.cshtml", tagPages[tag.Key].ToString());
+				File.WriteAllText($"{path}{tag.Value.NormalizedName}.cshtml.cs", GetCSFile("Sessions", tag.Value.NormalizedName));
 			}
 
 		}
