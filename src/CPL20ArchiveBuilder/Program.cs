@@ -400,22 +400,51 @@ namespace CPL20ArchiveBuilder
 			return header.ToString();
 		}
 
+		private static string BuildListingHeader((string Name, string NormalizedName) currentPage, List<(string Name, string NormalizedName)> items)
+		{
+			var header = new StringBuilder();
+			header.AppendLine("@page");
+			header.AppendLine($"@model CPL20Archive.Pages.Sessions.{currentPage.NormalizedName}Model");
+			header.AppendLine("@{");
+			header.AppendLine("}");
+			header.AppendLine("<div class=\"top-title-area bg-img-charcoal-eticket\">");
+			header.AppendLine("  <div class=\"container\">");
+			header.AppendLine("    <h1 class=\"title-page\">Sessions by Tag</h1>");
+			header.AppendLine("  </div>");
+			header.AppendLine("</div>");
+			header.AppendLine("<div class=\"gap\"></div>");
+			header.AppendLine("<div class=\"container\">");
+			header.AppendLine("  <div class=\"demo-buttons\">");
+			foreach (var tag in items)
+				header.AppendLine(BuildTagLink(tag.NormalizedName, tag.Name, currentPage));
+			header.AppendLine("  </div>");
+			header.AppendLine("  <div class=\"gap\"></div>");
+			return header.ToString();
+		}
+
 		private static void BuildSchedulePages(List<Session> sessions, string pagesPath)
 		{
-			var sessionPeriodPages = new Dictionary<int, StringBuilder>();
-			sessionPeriodPages.Add(105, new StringBuilder(BuildSchedulePageHeader(105, "WS")));
-			sessionPeriodPages.Add(108, new StringBuilder(BuildSchedulePageHeader(108, "01")));
-			sessionPeriodPages.Add(109, new StringBuilder(BuildSchedulePageHeader(109, "02")));
-			sessionPeriodPages.Add(110, new StringBuilder(BuildSchedulePageHeader(110, "03")));
-			sessionPeriodPages.Add(111, new StringBuilder(BuildSchedulePageHeader(111, "04")));
-			sessionPeriodPages.Add(112, new StringBuilder(BuildSchedulePageHeader(112, "05")));
-			sessionPeriodPages.Add(113, new StringBuilder(BuildSchedulePageHeader(113, "06")));
-			sessionPeriodPages.Add(114, new StringBuilder(BuildSchedulePageHeader(114, "07")));
-			sessionPeriodPages.Add(115, new StringBuilder(BuildSchedulePageHeader(115, "08")));
-			sessionPeriodPages.Add(116, new StringBuilder(BuildSchedulePageHeader(116, "09")));
-			sessionPeriodPages.Add(117, new StringBuilder(BuildSchedulePageHeader(117, "10")));
-			sessionPeriodPages.Add(118, new StringBuilder(BuildSchedulePageHeader(118, "11")));
-			sessionPeriodPages.Add(119, new StringBuilder(BuildSchedulePageHeader(119, "KN")));
+
+			var sessionPeriods = new Dictionary<int, (string Name, string NormalizedName)>
+			{
+				{ 105, ("Workshops", "Workshops") },
+				{ 108, ("Period 1", "Period1") },
+				{ 109, ("Period 2", "Period2") },
+				{ 110, ("Period 3", "Period3") },
+				{ 111, ("Period 4", "Period4") },
+				{ 112, ("Period 5", "Period5") },
+				{ 113, ("Period 6", "Period6") },
+				{ 114, ("Period 7", "Period7") },
+				{ 115, ("Period 8", "Period8") },
+				{ 116, ("Period 9", "Period9") },
+				{ 117, ("Period 10", "Period10") },
+				{ 118, ("Period 11", "Period11") },
+				{ 119, ("Keynote", "Keynote") }
+			};
+
+			var sessionPages = new Dictionary<int, StringBuilder>();
+			foreach (var sessionPeriod in sessionPeriods)
+				sessionPages.Add(sessionPeriod.Key, new StringBuilder(BuildListingHeader(sessionPeriod.Value, sessionPeriods.Values.ToList())));
 
 			foreach (var session in sessions)
 			{
@@ -433,87 +462,26 @@ namespace CPL20ArchiveBuilder
 					sessionListing.AppendLine($"      <h3>{session.Title}</h3>");
 					sessionListing.AppendLine("       </a>");
 					if (session.Id == 1779 || session.Id == 1721)
-						sessionListing.AppendLine($"      <p>{session.Summary}...<br /><br /><span style=\"background-color:#DF625C;\">&nbsp;Video Not Available&nbsp;</span></p>");
+						sessionListing.AppendLine($"      <p>{session.Summary}...<br /><br /><span style=\"background-color:#DF625C;foreground-color:#FFFFFF;\">&nbsp;Video Not Available&nbsp;</span></p>");
 					else if (session.VideoUploaded)
 						sessionListing.AppendLine($"      <p>{session.Summary}...<br /><br /><span style=\"background-color:#A3CF63;\">&nbsp;Video Available&nbsp;</span></p>");
 					else
-						sessionListing.AppendLine($"      <p>{session.Summary}...<br /><br /><span style=\"background-color:#DF625C;\">&nbsp;Video Not Available Yet&nbsp;</span></p>");
+						sessionListing.AppendLine($"      <p>{session.Summary}...<br /><br /><span style=\"background-color:#DF625C;foreground-color:#FFFFFF;\">&nbsp;Video Not Available Yet&nbsp;</span></p>");
 					sessionListing.AppendLine("    </div>");
 					sessionListing.AppendLine("  </div>");
 					sessionListing.AppendLine("  <hr />");
-					sessionPeriodPages[session.SessionPeriodId].Append(sessionListing.ToString());
+					if (session.SessionPeriodId == 106 || session.SessionPeriodId == 107 || session.SessionPeriodId == 120)
+						sessionPages[105].Append(sessionListing.ToString());
+					else
+						sessionPages[session.SessionPeriodId].Append(sessionListing.ToString());
 				}
 			}
 
-			foreach (var sessionPeriodPage in sessionPeriodPages)
+			var path = $@"{pagesPath}Sessions\";
+			foreach (var sessionPeriod in sessionPeriods)
 			{
-				sessionPeriodPage.Value.AppendLine("</div>");
-				var path = $@"{pagesPath}Sessions\Schedule";
-				if (sessionPeriodPage.Key == 105)
-				{
-					File.WriteAllText($"{path}WS.cshtml", sessionPeriodPage.Value.ToString());
-					File.WriteAllText($"{path}WS.cshtml.cs", GetCSFile("Sessions", "ScheduleWS"));
-				}
-				if (sessionPeriodPage.Key == 108)
-				{
-					File.WriteAllText($"{path}01.cshtml", sessionPeriodPage.Value.ToString());
-					File.WriteAllText($"{path}01.cshtml.cs", GetCSFile("Sessions", "Schedule01"));
-				}
-				if (sessionPeriodPage.Key == 109)
-				{
-					File.WriteAllText($"{path}02.cshtml", sessionPeriodPage.Value.ToString());
-					File.WriteAllText($"{path}02.cshtml.cs", GetCSFile("Sessions", "Schedule02"));
-				}
-				if (sessionPeriodPage.Key == 110)
-				{
-					File.WriteAllText($"{path}03.cshtml", sessionPeriodPage.Value.ToString());
-					File.WriteAllText($"{path}03.cshtml.cs", GetCSFile("Sessions", "Schedule03"));
-				}
-				if (sessionPeriodPage.Key == 111)
-				{
-					File.WriteAllText($"{path}04.cshtml", sessionPeriodPage.Value.ToString());
-					File.WriteAllText($"{path}04.cshtml.cs", GetCSFile("Sessions", "Schedule04"));
-				}
-				if (sessionPeriodPage.Key == 112)
-				{
-					File.WriteAllText($"{path}05.cshtml", sessionPeriodPage.Value.ToString());
-					File.WriteAllText($"{path}05.cshtml.cs", GetCSFile("Sessions", "Schedule05"));
-				}
-				if (sessionPeriodPage.Key == 113)
-				{
-					File.WriteAllText($"{path}06.cshtml", sessionPeriodPage.Value.ToString());
-					File.WriteAllText($"{path}06.cshtml.cs", GetCSFile("Sessions", "Schedule06"));
-				}
-				if (sessionPeriodPage.Key == 114)
-				{
-					File.WriteAllText($"{path}07.cshtml", sessionPeriodPage.Value.ToString());
-					File.WriteAllText($"{path}07.cshtml.cs", GetCSFile("Sessions", "Schedule07"));
-				}
-				if (sessionPeriodPage.Key == 115)
-				{
-					File.WriteAllText($"{path}08.cshtml", sessionPeriodPage.Value.ToString());
-					File.WriteAllText($"{path}08.cshtml.cs", GetCSFile("Sessions", "Schedule08"));
-				}
-				if (sessionPeriodPage.Key == 116)
-				{
-					File.WriteAllText($"{path}09.cshtml", sessionPeriodPage.Value.ToString());
-					File.WriteAllText($"{path}09.cshtml.cs", GetCSFile("Sessions", "Schedule09"));
-				}
-				if (sessionPeriodPage.Key == 117)
-				{
-					File.WriteAllText($"{path}10.cshtml", sessionPeriodPage.Value.ToString());
-					File.WriteAllText($"{path}10.cshtml.cs", GetCSFile("Sessions", "Schedule10"));
-				}
-				if (sessionPeriodPage.Key == 118)
-				{
-					File.WriteAllText($"{path}11.cshtml", sessionPeriodPage.Value.ToString());
-					File.WriteAllText($"{path}11.cshtml.cs", GetCSFile("Sessions", "Schedule11"));
-				}
-				if (sessionPeriodPage.Key == 119)
-				{
-					File.WriteAllText($"{path}KN.cshtml", sessionPeriodPage.Value.ToString());
-					File.WriteAllText($"{path}KN.cshtml.cs", GetCSFile("Sessions", "ScheduleKN"));
-				}
+				File.WriteAllText($"{path}{sessionPeriod.Value.NormalizedName}.cshtml", sessionPages[sessionPeriod.Key].ToString());
+				File.WriteAllText($"{path}{sessionPeriod.Value.NormalizedName}.cshtml.cs", GetCSFile("Sessions", sessionPeriod.Value.NormalizedName));
 			}
 
 		}
@@ -552,7 +520,7 @@ namespace CPL20ArchiveBuilder
 		{
 			var tagPages = new Dictionary<int, StringBuilder>();
 			foreach (var sessionTag in sessionTags)
-				tagPages.Add(sessionTag.Key, new StringBuilder(BuildTagsPageHeader(sessionTag.Value, sessionTags.Values.ToList())));
+				tagPages.Add(sessionTag.Key, new StringBuilder(BuildListingHeader(sessionTag.Value, sessionTags.Values.ToList())));
 
 			foreach (var session in sessions)
 			{
