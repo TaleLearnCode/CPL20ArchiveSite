@@ -52,15 +52,16 @@
     <div class="container">
       <div class="row">
         <div class="span3">
-          <a id="Logo" class="logo" href="http://localhost:55989/Default.aspx"><img src="https://greeneventstechnology.azureedge.net/cpl20/img/logo/HeaderLogo.png" alt="" /></a>
+          <a asp-page="/Index" id="Logo" class="logo"><img src="https://greeneventstechnology.azureedge.net/cpl20/img/logo/HeaderLogo.png" alt="" /></a>
         </div>
         <div class="span7">
           <div class="flexnav-menu-button" id="flexnav-menu-button">Menu</div>
           <nav>
             <ul class="nav nav-pills flexnav" id="flexnav" data-breakpoint="800">
-              <li><a href="/Default.aspx">Home</a></li>
-              <li Class="active">
-                <a href="#">Conference</a>
+              <li><a asp-page="/Index">Home</a></li>
+              <li><a asp-page="/Sessions/Schedule01">Sessions</a></li>
+              @*<li Class="active">
+                <a href="#">Sessions</a>
                 <ul>
                   <li><a href="/Schedule/08-19-2020">Schedule</a></li>
                   <li><a href="/Speakers">Speakers</a></li>
@@ -68,10 +69,10 @@
                   <li><a href="/SessionsByTopic/1">Sessions by Topic</a></li>
                   <li><a href="/Conference/SpeakerSeries.aspx">Speaker Interview Series</a></li>
                 </ul>
-              </li>
-              <li>
+              </li>*@
+              @*<li>
                 <a href="/Sponsors/Default.aspx">Sponsors</a>
-              </li>
+              </li>*@
               @if (User.Identity.IsAuthenticated)
               {
                 <li><a asp-area="AzureADB2C" asp-controller="Account" asp-action="SignOut">Sign Out</a></li>
@@ -96,11 +97,7 @@
       </div>
     </div>
   </header>
-  @*<div class="container">
-    <main role="main" class="pb-3">*@
-      @RenderBody()
-    @*</main>
-  </div>*@
+  @RenderBody()
   <footer class="main">
     <div class="container">
       <div class="row">
