@@ -47,43 +47,44 @@ namespace CPL20ArchiveBuilder
 			var rootDirectory = @"C:\Code PaLOUsa 2020 Videos\";
 			var pagesPath = @"D:\Repros\TaleLearnCode\CPL20ArchiveSite\src\CPL20Archive\Pages\";
 			var wwwRootPath = @"D:\Repros\TaleLearnCode\CPL20ArchiveSite\src\CPL20Archive\wwwroot\";
-			foreach (string sessionPeriodPath in Directory.GetDirectories(rootDirectory))
-			{
-				foreach (string sessionPath in Directory.GetDirectories(sessionPeriodPath))
-				{
-					var sessionPathComponents = sessionPath.Split('\\');
-					if (sessions.ContainsKey(Convert.ToInt32(sessionPathComponents[sessionPathComponents.Length - 1])))
-					{
-						var session = sessions[Convert.ToInt32(sessionPathComponents[sessionPathComponents.Length - 1])];
-						Console.WriteLine($"Uploading MP4 for Session {session.Id}");
-						//if (!alreadyUploadedVideos.Contains(session.Id.ToString()) && (session.Id != 1779 || session.Id != 1721))
-						//{
-						//	await UploadVideoAsync(session.Id, sessionPath, blobContainerClient);
-						//	alreadyUploadedVideos.Add(session.Id.ToString());
-						//}
-						if (session.Id != 1779 || session.Id != 1721)
-							sessions[session.Id].VideoUploaded = true;
-						var path = $@"{pagesPath}sessions\{session.Id}\";
-						Directory.CreateDirectory(path);
-						Console.WriteLine($"Writing session pages for Session {session.Id}");
+			//foreach (string sessionPeriodPath in Directory.GetDirectories(rootDirectory))
+			//{
+			//	foreach (string sessionPath in Directory.GetDirectories(sessionPeriodPath))
+			//	{
+			//		var sessionPathComponents = sessionPath.Split('\\');
+			//		if (sessions.ContainsKey(Convert.ToInt32(sessionPathComponents[sessionPathComponents.Length - 1])))
+			//		{
+			//			var session = sessions[Convert.ToInt32(sessionPathComponents[sessionPathComponents.Length - 1])];
+			//			Console.WriteLine($"Uploading MP4 for Session {session.Id}");
+			//			//if (!alreadyUploadedVideos.Contains(session.Id.ToString()) && (session.Id != 1779 || session.Id != 1721))
+			//			//{
+			//			//	await UploadVideoAsync(session.Id, sessionPath, blobContainerClient);
+			//			//	alreadyUploadedVideos.Add(session.Id.ToString());
+			//			//}
+			//			if (session.Id != 1779 || session.Id != 1721)
+			//				sessions[session.Id].VideoUploaded = true;
+			//			var path = $@"{pagesPath}sessions\{session.Id}\";
+			//			Directory.CreateDirectory(path);
+			//			Console.WriteLine($"Writing session pages for Session {session.Id}");
 
-						var cshtmlPath = @$"{pagesPath}Sessions\{session.Id}\";
-						Directory.CreateDirectory(cshtmlPath);
-						File.WriteAllText($"{cshtmlPath}Index.cshtml", BuildIndexPage(session, sessionTags));
-						File.WriteAllText($"{cshtmlPath}Index.cshtml.cs", BuildIndexCSFile(session.Id));
+			//			var cshtmlPath = @$"{pagesPath}Sessions\{session.Id}\";
+			//			Directory.CreateDirectory(cshtmlPath);
+			//			File.WriteAllText($"{cshtmlPath}Index.cshtml", BuildIndexPage(session, sessionTags));
+			//			File.WriteAllText($"{cshtmlPath}Index.cshtml.cs", BuildIndexCSFile(session.Id));
 
-						var sessionEmbedPath = @$"{wwwRootPath}sessions\{session.Id}\";
-						Directory.CreateDirectory(sessionEmbedPath);
-						File.WriteAllText($"{sessionEmbedPath}player.html", BuildPlayerPage(session));
-						File.WriteAllText($"{sessionEmbedPath}config.xml", BuildConfigXML(session));
-						File.WriteAllText($"{sessionEmbedPath}config_xml.js", BuildConfigXMLJs(session));
-						Console.WriteLine();
-					}
-				}
-			}
+			//			var sessionEmbedPath = @$"{wwwRootPath}sessions\{session.Id}\";
+			//			Directory.CreateDirectory(sessionEmbedPath);
+			//			File.WriteAllText($"{sessionEmbedPath}player.html", BuildPlayerPage(session));
+			//			File.WriteAllText($"{sessionEmbedPath}config.xml", BuildConfigXML(session));
+			//			File.WriteAllText($"{sessionEmbedPath}config_xml.js", BuildConfigXMLJs(session));
+			//			Console.WriteLine();
+			//		}
+			//	}
+			//}
 
 			BuildSchedulePages(sessions.Values.ToList(), pagesPath);
 			BuildTagPages(sessions.Values.ToList(), sessionTags, pagesPath);
+			BuildTopicPages(sessions.Values.ToList(), pagesPath);
 
 			File.WriteAllLines(logFileLocation, alreadyUploadedVideos.ToArray());
 
@@ -415,7 +416,7 @@ namespace CPL20ArchiveBuilder
 			header.AppendLine("<div class=\"container\">");
 			header.AppendLine("  <div class=\"demo-buttons\">");
 			foreach (var item in items)
-				header.AppendLine(BuildTagLink(item.NormalizedName, item.Name, currentPage));
+				header.AppendLine(BuildTabLink(item.NormalizedName, item.Name, currentPage));
 			header.AppendLine("  </div>");
 			header.AppendLine("  <div class=\"gap\"></div>");
 			return header.ToString();
@@ -485,7 +486,7 @@ namespace CPL20ArchiveBuilder
 
 		}
 		
-		private static string BuildTagLink(string pageFileName, string pageName, (string Name, string NormalizedName) selectedTag)
+		private static string BuildTabLink(string pageFileName, string pageName, (string Name, string NormalizedName) selectedTag)
 		{
 			if (pageName == selectedTag.Name)
 				return $"    <a asp-page=\"{pageFileName}\" class=\"btn btn-info\">{pageName}</a>";
@@ -509,7 +510,7 @@ namespace CPL20ArchiveBuilder
 			header.AppendLine("<div class=\"container\">");
 			header.AppendLine("  <div class=\"demo-buttons\">");
 			foreach (var tag in tags)
-				header.AppendLine(BuildTagLink(tag.NormalizedName, tag.Name, currentTag));
+				header.AppendLine(BuildTabLink(tag.NormalizedName, tag.Name, currentTag));
 			header.AppendLine("  </div>");
 			header.AppendLine("  <div class=\"gap\"></div>");
 			return header.ToString();
@@ -558,6 +559,63 @@ namespace CPL20ArchiveBuilder
 			}
 
 		}
+
+		private static void BuildTopicPages(List<Session> sessions, string pagesPath)
+		{
+
+			var topics = new Dictionary<int, (string Name, string NormalizedName)>()
+			{
+				{ 1, ("Application Development", "Topic_AppDev") },
+				{ 2, ("Infrastructure", "Topic_Infrastructure") },
+				{ 3, ("Project Mangement", "Topic_ProjMgnt") },
+				{ 4, ("Requirements", "Topic_Requirements") },
+				{ 5, ("Soft Skills", "Topic_SoftSkills") },
+				{ 6, ("Software Testing", "Topic_Testing") },
+				{ 7, ("User Experience", "Topic_UX") }
+			};
+
+			var topicPages = new Dictionary<int, StringBuilder>();
+			foreach (var topic in topics)
+				topicPages.Add(topic.Key, new StringBuilder(BuildListingHeader(topic.Value, topics.Values.ToList())));
+
+			foreach (var session in sessions)
+			{
+				foreach (var topic in session.Topics)
+				{
+					var sessionListing = new StringBuilder();
+					sessionListing.AppendLine("  <div class=\"row\">");
+					sessionListing.AppendLine("    <div class=\"span4\">");
+					sessionListing.AppendLine($"      <a asp-page=\"/Sessions/{session.Id}/Index\">");
+					sessionListing.AppendLine($"        <img style=\"width: 320px; height: 180px\" src=\"https://greeneventstechnology.azureedge.net/cpl20/thumbnails/{session.Id}.jpg\" />");
+					sessionListing.AppendLine("       </a>");
+					sessionListing.AppendLine("    </div>");
+					sessionListing.AppendLine("    <div class=\"span8\">");
+					sessionListing.AppendLine($"      <a asp-page=\"/Sessions/{session.Id}/Index\">");
+					sessionListing.AppendLine($"      <h3>{session.Title}</h3>");
+					sessionListing.AppendLine("       </a>");
+					if (session.Id == 1779 || session.Id == 1721)
+						sessionListing.AppendLine($"      <p>{session.Summary}...<br /><br /><span style=\"background-color:#DF625C;foreground-color:#FFFFFF;\">&nbsp;Video Not Available&nbsp;</span></p>");
+					else if (session.VideoUploaded)
+						sessionListing.AppendLine($"      <p>{session.Summary}...<br /><br /><span style=\"background-color:#A3CF63;\">&nbsp;Video Available&nbsp;</span></p>");
+					else
+						sessionListing.AppendLine($"      <p>{session.Summary}...<br /><br /><span style=\"background-color:#DF625C;foreground-color:#FFFFFF;\">&nbsp;Video Not Available Yet&nbsp;</span></p>");
+					sessionListing.AppendLine("    </div>");
+					sessionListing.AppendLine("  </div>");
+					sessionListing.AppendLine("  <hr />");
+					topicPages[topic].Append(sessionListing.ToString());
+				}
+
+			}
+
+			var path = $@"{pagesPath}Sessions\";
+			foreach (var topic in topics)
+			{
+				File.WriteAllText($"{path}{topic.Value.NormalizedName}.cshtml", topicPages[topic.Key].ToString());
+				File.WriteAllText($"{path}{topic.Value.NormalizedName}.cshtml.cs", GetCSFile("Sessions", topic.Value.NormalizedName));
+			}
+
+		}
+
 
 		private static string GetCSFile(string pageFolder, string pageName)
 		{
