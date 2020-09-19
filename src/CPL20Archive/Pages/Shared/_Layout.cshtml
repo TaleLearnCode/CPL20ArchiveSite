@@ -6,7 +6,6 @@
   var options = AzureADB2COptions.Get(AzureADB2CDefaults.AuthenticationScheme);
 }
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -59,17 +58,17 @@
           <nav>
             <ul class="nav nav-pills flexnav" id="flexnav" data-breakpoint="800">
               <li><a asp-page="/Index">Home</a></li>
-              <li><a asp-page="/Sessions/Schedule01">Sessions</a></li>
-              @*<li Class="active">
+              @*<li><a asp-page="/Sessions/Schedule01">Sessions</a></li>*@
+              <li Class="active">
                 <a href="#">Sessions</a>
                 <ul>
-                  <li><a href="/Schedule/08-19-2020">Schedule</a></li>
-                  <li><a href="/Speakers">Speakers</a></li>
-                  <li><a href="/SessionsByTag/1">Sessions by Tag</a></li>
-                  <li><a href="/SessionsByTopic/1">Sessions by Topic</a></li>
-                  <li><a href="/Conference/SpeakerSeries.aspx">Speaker Interview Series</a></li>
+                  <li><a asp-page="/Sessions/Period1">By Schedule Period</a></li>
+                  @*<li><a href="/Speakers">Speakers</a></li>*@
+                  <li><a asp-page="/Sessions/dotnet">By Tag</a></li>
+                  <li><a asp-page="/Sessions/Topic_AppDev">By Topic</a></li>
+                  @*<li><a href="/Conference/SpeakerSeries.aspx">Speaker Interview Series</a></li>*@
                 </ul>
-              </li>*@
+              </li>
               @*<li>
                 <a href="/Sponsors/Default.aspx">Sponsors</a>
               </li>*@

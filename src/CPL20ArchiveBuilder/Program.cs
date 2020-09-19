@@ -17,7 +17,6 @@ namespace CPL20ArchiveBuilder
 		public static void Main()
 		{
 
-
 			using SqlConnection sqlConnection = new SqlConnection(Settings.DatabaseConnectionString);
 			sqlConnection.Open();
 
@@ -47,40 +46,40 @@ namespace CPL20ArchiveBuilder
 			var rootDirectory = @"C:\Code PaLOUsa 2020 Videos\";
 			var pagesPath = @"D:\Repros\TaleLearnCode\CPL20ArchiveSite\src\CPL20Archive\Pages\";
 			var wwwRootPath = @"D:\Repros\TaleLearnCode\CPL20ArchiveSite\src\CPL20Archive\wwwroot\";
-			//foreach (string sessionPeriodPath in Directory.GetDirectories(rootDirectory))
-			//{
-			//	foreach (string sessionPath in Directory.GetDirectories(sessionPeriodPath))
-			//	{
-			//		var sessionPathComponents = sessionPath.Split('\\');
-			//		if (sessions.ContainsKey(Convert.ToInt32(sessionPathComponents[sessionPathComponents.Length - 1])))
-			//		{
-			//			var session = sessions[Convert.ToInt32(sessionPathComponents[sessionPathComponents.Length - 1])];
-			//			Console.WriteLine($"Uploading MP4 for Session {session.Id}");
-			//			//if (!alreadyUploadedVideos.Contains(session.Id.ToString()) && (session.Id != 1779 || session.Id != 1721))
-			//			//{
-			//			//	await UploadVideoAsync(session.Id, sessionPath, blobContainerClient);
-			//			//	alreadyUploadedVideos.Add(session.Id.ToString());
-			//			//}
-			//			if (session.Id != 1779 || session.Id != 1721)
-			//				sessions[session.Id].VideoUploaded = true;
-			//			var path = $@"{pagesPath}sessions\{session.Id}\";
-			//			Directory.CreateDirectory(path);
-			//			Console.WriteLine($"Writing session pages for Session {session.Id}");
+			foreach (string sessionPeriodPath in Directory.GetDirectories(rootDirectory))
+			{
+				foreach (string sessionPath in Directory.GetDirectories(sessionPeriodPath))
+				{
+					var sessionPathComponents = sessionPath.Split('\\');
+					if (sessions.ContainsKey(Convert.ToInt32(sessionPathComponents[sessionPathComponents.Length - 1])))
+					{
+						var session = sessions[Convert.ToInt32(sessionPathComponents[sessionPathComponents.Length - 1])];
+						Console.WriteLine($"Uploading MP4 for Session {session.Id}");
+						//if (!alreadyUploadedVideos.Contains(session.Id.ToString()) && (session.Id != 1779 || session.Id != 1721))
+						//{
+						//	await UploadVideoAsync(session.Id, sessionPath, blobContainerClient);
+						//	alreadyUploadedVideos.Add(session.Id.ToString());
+						//}
+						if (session.Id != 1779 || session.Id != 1721)
+							sessions[session.Id].VideoUploaded = true;
+						var path = $@"{pagesPath}sessions\{session.Id}\";
+						Directory.CreateDirectory(path);
+						Console.WriteLine($"Writing session pages for Session {session.Id}");
 
-			//			var cshtmlPath = @$"{pagesPath}Sessions\{session.Id}\";
-			//			Directory.CreateDirectory(cshtmlPath);
-			//			File.WriteAllText($"{cshtmlPath}Index.cshtml", BuildIndexPage(session, sessionTags));
-			//			File.WriteAllText($"{cshtmlPath}Index.cshtml.cs", BuildIndexCSFile(session.Id));
+						var cshtmlPath = @$"{pagesPath}Sessions\{session.Id}\";
+						Directory.CreateDirectory(cshtmlPath);
+						File.WriteAllText($"{cshtmlPath}Index.cshtml", BuildIndexPage(session, sessionTags));
+						File.WriteAllText($"{cshtmlPath}Index.cshtml.cs", BuildIndexCSFile(session.Id));
 
-			//			var sessionEmbedPath = @$"{wwwRootPath}sessions\{session.Id}\";
-			//			Directory.CreateDirectory(sessionEmbedPath);
-			//			File.WriteAllText($"{sessionEmbedPath}player.html", BuildPlayerPage(session));
-			//			File.WriteAllText($"{sessionEmbedPath}config.xml", BuildConfigXML(session));
-			//			File.WriteAllText($"{sessionEmbedPath}config_xml.js", BuildConfigXMLJs(session));
-			//			Console.WriteLine();
-			//		}
-			//	}
-			//}
+						var sessionEmbedPath = @$"{wwwRootPath}sessions\{session.Id}\";
+						Directory.CreateDirectory(sessionEmbedPath);
+						File.WriteAllText($"{sessionEmbedPath}player.html", BuildPlayerPage(session));
+						File.WriteAllText($"{sessionEmbedPath}config.xml", BuildConfigXML(session));
+						File.WriteAllText($"{sessionEmbedPath}config_xml.js", BuildConfigXMLJs(session));
+						Console.WriteLine();
+					}
+				}
+			}
 
 			BuildSchedulePages(sessions.Values.ToList(), pagesPath);
 			BuildTagPages(sessions.Values.ToList(), sessionTags, pagesPath);
@@ -615,7 +614,6 @@ namespace CPL20ArchiveBuilder
 			}
 
 		}
-
 
 		private static string GetCSFile(string pageFolder, string pageName)
 		{
