@@ -1,6 +1,5 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-using Microsoft.Extensions.Azure;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -415,8 +414,8 @@ namespace CPL20ArchiveBuilder
 			header.AppendLine("<div class=\"gap\"></div>");
 			header.AppendLine("<div class=\"container\">");
 			header.AppendLine("  <div class=\"demo-buttons\">");
-			foreach (var tag in items)
-				header.AppendLine(BuildTagLink(tag.NormalizedName, tag.Name, currentPage));
+			foreach (var item in items)
+				header.AppendLine(BuildTagLink(item.NormalizedName, item.Name, currentPage));
 			header.AppendLine("  </div>");
 			header.AppendLine("  <div class=\"gap\"></div>");
 			return header.ToString();
@@ -485,10 +484,10 @@ namespace CPL20ArchiveBuilder
 			}
 
 		}
-
+		
 		private static string BuildTagLink(string pageFileName, string pageName, (string Name, string NormalizedName) selectedTag)
 		{
-			if (pageName == selectedTag.NormalizedName)
+			if (pageName == selectedTag.Name)
 				return $"    <a asp-page=\"{pageFileName}\" class=\"btn btn-info\">{pageName}</a>";
 			else
 				return $"    <a asp-page=\"{pageFileName}\" class=\"btn\">{pageName}</a>";
