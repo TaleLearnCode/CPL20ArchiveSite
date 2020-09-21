@@ -28,14 +28,18 @@ namespace CPL20Archive
 		{
 			services.AddAuthentication(AzureADB2CDefaults.AuthenticationScheme)
 					.AddAzureADB2C(options => Configuration.Bind("AzureAdB2C", options));
-			services.AddRazorPages();
-
-			services.AddAuthorization(options =>
-			{
-				options.FallbackPolicy = new AuthorizationPolicyBuilder()
-					.RequireAuthenticatedUser()
-					.Build();
+			services.AddRazorPages(options =>
+			{ 
+				options.Conventions.AuthorizeFolder("/Sessions");
 			});
+
+			//services.AddAuthorization(options =>
+			//{
+			//	options.FallbackPolicy = new AuthorizationPolicyBuilder()
+			//		.RequireAuthenticatedUser()
+			//		.Build();
+			//});
+			services.AddAuthorization();
 
 		}
 

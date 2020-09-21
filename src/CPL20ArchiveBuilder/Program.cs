@@ -14,7 +14,7 @@ namespace CPL20ArchiveBuilder
 	public class Program
 	{
 
-		public static void Main()
+		public static async Task Main()
 		{
 
 			using SqlConnection sqlConnection = new SqlConnection(Settings.DatabaseConnectionString);
@@ -55,11 +55,11 @@ namespace CPL20ArchiveBuilder
 					{
 						var session = sessions[Convert.ToInt32(sessionPathComponents[sessionPathComponents.Length - 1])];
 						Console.WriteLine($"Uploading MP4 for Session {session.Id}");
-						//if (!alreadyUploadedVideos.Contains(session.Id.ToString()) && (session.Id != 1779 || session.Id != 1721))
-						//{
-						//	await UploadVideoAsync(session.Id, sessionPath, blobContainerClient);
-						//	alreadyUploadedVideos.Add(session.Id.ToString());
-						//}
+						if (!alreadyUploadedVideos.Contains(session.Id.ToString()) && (session.Id != 1779 || session.Id != 1721))
+						{
+							await UploadVideoAsync(session.Id.ToString(), sessionPath, blobContainerClient);
+							alreadyUploadedVideos.Add(session.Id.ToString());
+						}
 						if (session.Id != 1779 || session.Id != 1721)
 							sessions[session.Id].VideoUploaded = true;
 						var path = $@"{pagesPath}sessions\{session.Id}\";
