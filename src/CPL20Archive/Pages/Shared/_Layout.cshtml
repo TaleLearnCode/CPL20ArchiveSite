@@ -20,8 +20,8 @@
   <meta name="author" content="Code PaLOUsa" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <!-- Google fonts -->
-  <link href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,700" rel="stylesheet" type="text/css" />
-  <link href="http://fonts.googleapis.com/css?family=Roboto:400,300,700" rel="stylesheet" type="text/css" />
+  @*<link href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,700" rel="stylesheet" type="text/css" />
+    <link href="http://fonts.googleapis.com/css?family=Roboto:400,300,700" rel="stylesheet" type="text/css" />*@
   <!-- Bootstrap styles -->
   <link rel="stylesheet" href="https://greeneventstechnology.azureedge.net/cpl20/css/boostrap.css" />
   <link rel="stylesheet" href="https://greeneventstechnology.azureedge.net/cpl20/css/boostrap_responsive.css" />
@@ -70,8 +70,8 @@
                 </ul>
               </li>
               @*<li>
-                <a href="/Sponsors/Default.aspx">Sponsors</a>
-              </li>*@
+                  <a href="/Sponsors/Default.aspx">Sponsors</a>
+                </li>*@
               @if (User.Identity.IsAuthenticated)
               {
                 <li><a asp-area="AzureADB2C" asp-controller="Account" asp-action="SignOut">Sign Out</a></li>
@@ -101,7 +101,7 @@
     <div class="container">
       <div class="row">
         <div class="span2">
-          <a id="HyperLink1" class="logo" href="http://localhost:55989/Default.aspx"><img src="https://greeneventstechnology.azureedge.net/cpl20/cpl20/img/logo/HeaderLogo.png" alt="" /></a>
+          <a id="HyperLink1" class="logo" href="http://localhost:55989/Default.aspx"><img src="https://greeneventstechnology.azureedge.net/cpl20/img/logo/HeaderLogo.png" alt="" /></a>
           <div class="gap gap-small"></div>
         </div>
         <div class="span3 offset1">

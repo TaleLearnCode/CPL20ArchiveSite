@@ -137,12 +137,12 @@ namespace CPL20ArchiveBuilder
 			{
 				indexPage.AppendLine("              <div class=\"thumb center\">");
 				indexPage.AppendLine("                <div class=\"thumb-header\">");
-				indexPage.AppendLine($"                  <a class=\"hover-img\" href=\"/SpeakerDetails/{speaker.Id}\">");
+				indexPage.AppendLine($"                  <a class=\"hover-img\" href=\"http://codepalousa.com/SpeakerDetails/{speaker.Id}\">");
 				indexPage.AppendLine($"                    <img src=\"https://greeneventstechnology.azureedge.net/cpl20/speakers/{speaker.FirstName}_{speaker.LastName}.png\" alt=\"{speaker.FirstName} {speaker.LastName}\" title=\"{speaker.FirstName} {speaker.LastName}\" />");
 				indexPage.AppendLine("                  </a>");
 				indexPage.AppendLine("                </div>");
 				indexPage.AppendLine("                <div class=\"thumb-caption\">");
-				indexPage.AppendLine($"                  <h5 class=\"thumb-title\"><a href=\"/SpeakerDetails/{speaker.Id}\">{speaker.FirstName} {speaker.LastName}</a></h5>");
+				indexPage.AppendLine($"                  <h5 class=\"thumb-title\"><a href=\"http://codepalousa.com/SpeakerDetails/{speaker.Id}\">{speaker.FirstName} {speaker.LastName}</a></h5>");
 				indexPage.AppendLine("                  <p class=\"thumb-meta\"><br /></p>");
 				indexPage.AppendLine("                </div>");
 				indexPage.AppendLine("              </div>");
@@ -399,7 +399,7 @@ namespace CPL20ArchiveBuilder
 			return header.ToString();
 		}
 
-		private static string BuildListingHeader((string Name, string NormalizedName) currentPage, List<(string Name, string NormalizedName)> items)
+		private static string BuildListingHeader((string Name, string NormalizedName) currentPage, List<(string Name, string NormalizedName)> items, string pageTitle)
 		{
 			var header = new StringBuilder();
 			header.AppendLine("@page");
@@ -408,7 +408,7 @@ namespace CPL20ArchiveBuilder
 			header.AppendLine("}");
 			header.AppendLine("<div class=\"top-title-area bg-img-charcoal-eticket\">");
 			header.AppendLine("  <div class=\"container\">");
-			header.AppendLine("    <h1 class=\"title-page\">Sessions by Tag</h1>");
+			header.AppendLine($"    <h1 class=\"title-page\">{pageTitle}</h1>");
 			header.AppendLine("  </div>");
 			header.AppendLine("</div>");
 			header.AppendLine("<div class=\"gap\"></div>");
@@ -443,7 +443,7 @@ namespace CPL20ArchiveBuilder
 
 			var sessionPages = new Dictionary<int, StringBuilder>();
 			foreach (var sessionPeriod in sessionPeriods)
-				sessionPages.Add(sessionPeriod.Key, new StringBuilder(BuildListingHeader(sessionPeriod.Value, sessionPeriods.Values.ToList())));
+				sessionPages.Add(sessionPeriod.Key, new StringBuilder(BuildListingHeader(sessionPeriod.Value, sessionPeriods.Values.ToList(), "Sessions by Period")));
 
 			foreach (var session in sessions)
 			{
@@ -484,7 +484,7 @@ namespace CPL20ArchiveBuilder
 			}
 
 		}
-		
+
 		private static string BuildTabLink(string pageFileName, string pageName, (string Name, string NormalizedName) selectedTag)
 		{
 			if (pageName == selectedTag.Name)
@@ -519,7 +519,7 @@ namespace CPL20ArchiveBuilder
 		{
 			var tagPages = new Dictionary<int, StringBuilder>();
 			foreach (var sessionTag in sessionTags)
-				tagPages.Add(sessionTag.Key, new StringBuilder(BuildListingHeader(sessionTag.Value, sessionTags.Values.ToList())));
+				tagPages.Add(sessionTag.Key, new StringBuilder(BuildListingHeader(sessionTag.Value, sessionTags.Values.ToList(), "Sessions by Tag")));
 
 			foreach (var session in sessions)
 			{
@@ -575,7 +575,7 @@ namespace CPL20ArchiveBuilder
 
 			var topicPages = new Dictionary<int, StringBuilder>();
 			foreach (var topic in topics)
-				topicPages.Add(topic.Key, new StringBuilder(BuildListingHeader(topic.Value, topics.Values.ToList())));
+				topicPages.Add(topic.Key, new StringBuilder(BuildListingHeader(topic.Value, topics.Values.ToList(), "Sessions by Topic")));
 
 			foreach (var session in sessions)
 			{
