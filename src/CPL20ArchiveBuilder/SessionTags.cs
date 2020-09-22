@@ -2,7 +2,6 @@
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.SqlClient;
-using System.Diagnostics;
 using System.Text;
 
 namespace CPL20ArchiveBuilder
@@ -29,7 +28,7 @@ namespace CPL20ArchiveBuilder
 		{
 			var returnValue = new StringBuilder();
 			foreach (int sessionTag in this)
-				returnValue.Append($"<a href=\"/SessionsByTag/{sessionTag}\">{sessionTags[sessionTag].Name}</a><br />");
+				returnValue.Append($"<a asp-page=\"/Sessions/{sessionTags[sessionTag].NormalizedName}\">{sessionTags[sessionTag].Name}</a><br />");
 			return returnValue.ToString();
 		}
 

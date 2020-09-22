@@ -55,11 +55,11 @@ namespace CPL20ArchiveBuilder
 					{
 						var session = sessions[Convert.ToInt32(sessionPathComponents[sessionPathComponents.Length - 1])];
 						Console.WriteLine($"Uploading MP4 for Session {session.Id}");
-						if (!alreadyUploadedVideos.Contains(session.Id.ToString()) && (session.Id != 1779 || session.Id != 1721))
-						{
-							await UploadVideoAsync(session.Id.ToString(), sessionPath, blobContainerClient);
-							alreadyUploadedVideos.Add(session.Id.ToString());
-						}
+						//if (!alreadyUploadedVideos.Contains(session.Id.ToString()) && (session.Id != 1779 || session.Id != 1721))
+						//{
+						//	await UploadVideoAsync(session.Id.ToString(), sessionPath, blobContainerClient);
+						//	alreadyUploadedVideos.Add(session.Id.ToString());
+						//}
 						if (session.Id != 1779 || session.Id != 1721)
 							sessions[session.Id].VideoUploaded = true;
 						var path = $@"{pagesPath}sessions\{session.Id}\";
@@ -327,78 +327,6 @@ namespace CPL20ArchiveBuilder
 			return js.ToString();
 		}
 
-		private static string BuildSchedulePageHeader(int sessionPeriodId, string pageNumber)
-		{
-			var header = new StringBuilder();
-			header.AppendLine("@page");
-			header.AppendLine($"@model CPL20Archive.Pages.Sessions.Schedule{pageNumber}Model");
-			header.AppendLine("@{");
-			header.AppendLine("}");
-			header.AppendLine("<div class=\"top-title-area bg-img-charcoal-eticket\">");
-			header.AppendLine("  <div class=\"container\">");
-			header.AppendLine("    <h1 class=\"title-page\">Sessions by Session Period</h1>");
-			header.AppendLine("  </div>");
-			header.AppendLine("</div>");
-			header.AppendLine("<div class=\"gap\"></div>");
-			header.AppendLine("<div class=\"container\">");
-			header.AppendLine("  <div class=\"demo-buttons\">");
-			if (sessionPeriodId == 105)
-				header.AppendLine("    <a asp-page=\"ScheduleWS\" class=\"btn btn-info\">Workshops</a>");
-			else
-				header.AppendLine("    <a asp-page=\"ScheduleWS\" class=\"btn\">Workshops</a>");
-			if (sessionPeriodId == 108)
-				header.AppendLine("    <a asp-page=\"Schedule01\" class=\"btn btn-info\">Session Period 1</a>");
-			else
-				header.AppendLine("    <a asp-page=\"Schedule01\" class=\"btn\">Session Period 1</a>");
-			if (sessionPeriodId == 109)
-				header.AppendLine("    <a asp-page=\"Schedule02\" class=\"btn btn-info\">Session Period 2</a>");
-			else
-				header.AppendLine("    <a asp-page=\"Schedule02\" class=\"btn\">Session Period 2</a>");
-			if (sessionPeriodId == 110)
-				header.AppendLine("    <a asp-page=\"Schedule03\" class=\"btn btn-info\">Session Period 3</a>");
-			else
-				header.AppendLine("    <a asp-page=\"Schedule03\" class=\"btn\">Session Period 3</a>");
-			if (sessionPeriodId == 111)
-				header.AppendLine("    <a asp-page=\"Schedule04\" class=\"btn btn-info\">Session Period 4</a>");
-			else
-				header.AppendLine("    <a asp-page=\"Schedule04\" class=\"btn\">Session Period 4</a>");
-			if (sessionPeriodId == 112)
-				header.AppendLine("    <a asp-page=\"Schedule05\" class=\"btn btn-info\">Session Period 5</a>");
-			else
-				header.AppendLine("    <a asp-page=\"Schedule05\" class=\"btn\">Session Period 5</a>");
-			if (sessionPeriodId == 113)
-				header.AppendLine("    <a asp-page=\"Schedule06\" class=\"btn btn-info\">Session Period 6</a>");
-			else
-				header.AppendLine("    <a asp-page=\"Schedule06\" class=\"btn\">Session Period 6</a>");
-			if (sessionPeriodId == 114)
-				header.AppendLine("    <a asp-page=\"Schedule07\" class=\"btn btn-info\">Session Period 7</a>");
-			else
-				header.AppendLine("    <a asp-page=\"Schedule07\" class=\"btn\">Session Period 7</a>");
-			if (sessionPeriodId == 115)
-				header.AppendLine("    <a asp-page=\"Schedule08\" class=\"btn btn-info\">Session Period 8</a>");
-			else
-				header.AppendLine("    <a asp-page=\"Schedule08\" class=\"btn\">Session Period 8</a>");
-			if (sessionPeriodId == 116)
-				header.AppendLine("    <a asp-page=\"Schedule09\" class=\"btn btn-info\">Session Period 9</a>");
-			else
-				header.AppendLine("    <a asp-page=\"Schedule09\" class=\"btn\">Session Period 9</a>");
-			if (sessionPeriodId == 117)
-				header.AppendLine("    <a asp-page=\"Schedule10\" class=\"btn btn-info\">Session Period 10</a>");
-			else
-				header.AppendLine("    <a asp-page=\"Schedule10\" class=\"btn\">Session Period 10</a>");
-			if (sessionPeriodId == 118)
-				header.AppendLine("    <a asp-page=\"Schedule11\" class=\"btn btn-info\">Session Period 11</a>");
-			else
-				header.AppendLine("    <a asp-page=\"Schedule11\" class=\"btn\">Session Period 11</a>");
-			if (sessionPeriodId == 119)
-				header.AppendLine("    <a asp-page=\"ScheduleKN\" class=\"btn btn-info\">Keynote</a>");
-			else
-				header.AppendLine("    <a asp-page=\"ScheduleKN\" class=\"btn\">Keynote</a>");
-			header.AppendLine("  </div>");
-			header.AppendLine("  <div class=\"gap\"></div>");
-			return header.ToString();
-		}
-
 		private static string BuildListingHeader((string Name, string NormalizedName) currentPage, List<(string Name, string NormalizedName)> items, string pageTitle)
 		{
 			var header = new StringBuilder();
@@ -491,28 +419,6 @@ namespace CPL20ArchiveBuilder
 				return $"    <a asp-page=\"{pageFileName}\" class=\"btn btn-info\">{pageName}</a>";
 			else
 				return $"    <a asp-page=\"{pageFileName}\" class=\"btn\">{pageName}</a>";
-		}
-
-		private static string BuildTagsPageHeader((string Name, string NormalizedName) currentTag, List<(string Name, string NormalizedName)> tags)
-		{
-			var header = new StringBuilder();
-			header.AppendLine("@page");
-			header.AppendLine($"@model CPL20Archive.Pages.Sessions.{currentTag.NormalizedName}Model");
-			header.AppendLine("@{");
-			header.AppendLine("}");
-			header.AppendLine("<div class=\"top-title-area bg-img-charcoal-eticket\">");
-			header.AppendLine("  <div class=\"container\">");
-			header.AppendLine("    <h1 class=\"title-page\">Sessions by Tag</h1>");
-			header.AppendLine("  </div>");
-			header.AppendLine("</div>");
-			header.AppendLine("<div class=\"gap\"></div>");
-			header.AppendLine("<div class=\"container\">");
-			header.AppendLine("  <div class=\"demo-buttons\">");
-			foreach (var tag in tags)
-				header.AppendLine(BuildTabLink(tag.NormalizedName, tag.Name, currentTag));
-			header.AppendLine("  </div>");
-			header.AppendLine("  <div class=\"gap\"></div>");
-			return header.ToString();
 		}
 
 		private static void BuildTagPages(List<Session> sessions, Dictionary<int, (string Name, string NormalizedName)> sessionTags, string pagesPath)

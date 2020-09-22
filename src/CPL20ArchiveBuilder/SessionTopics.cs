@@ -31,25 +31,25 @@ namespace CPL20ArchiveBuilder
 				switch (sessionTopic)
 				{
 					case 1:
-						returnValue.Append("<a href=\"/SessionsByTopic/1\">Application Development</a><br />");
+						returnValue.Append("<a asp-page=\"/Sessions/Topic_AppDev\">Application Development</a><br />");
 						break;
 					case 2:
-						returnValue.Append("<a href=\"/SessionsByTopic/2\">Infrastructure</a><br />");
+						returnValue.Append("<a asp-page=\"/Sessions/Topic_Infrastructure\">Infrastructure</a><br />");
 						break;
 					case 3:
-						returnValue.Append("<a href=\"/SessionsByTopic/3\">Project Management</a><br />");
+						returnValue.Append("<a asp-page=\"/Sessions/Topic_ProjMgnt\">Project Management</a><br />");
 						break;
 					case 4:
-						returnValue.Append("<a href=\"/SessionsByTopic/4\">Requirements</a><br />");
+						returnValue.Append("<a asp-page=\"/Sessions/Topic_Requirements\">Requirements</a><br />");
 						break;
 					case 5:
-						returnValue.Append("<a href=\"/SessionsByTopic/5\">Soft Skills</a><br />");
+						returnValue.Append("<a asp-page=\"/Sessions/Topic_SoftSkills\">Soft Skills</a><br />");
 						break;
 					case 6:
-						returnValue.Append("<a href=\"/SessionsByTopic/6\">Software Testing</a><br />");
+						returnValue.Append("<a asp-page=\"Sessions/Topic_Testing\" > Software Testing</a><br />");
 						break;
 					case 7:
-						returnValue.Append("<a href=\"/SessionsByTopic/7\">User Experience</a><br />");
+						returnValue.Append("<a asp-page=\"/Sessions/Topic_UX\">User Experience</a><br />");
 						break;
 				}
 			}
