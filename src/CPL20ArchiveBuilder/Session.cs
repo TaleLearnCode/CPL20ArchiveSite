@@ -24,6 +24,8 @@ namespace CPL20ArchiveBuilder
 
 		public bool VideoUploaded { get; set; }
 
+		public string YouTubeId { get; set; }
+
 		public SessionTopics Topics { get; } = new SessionTopics();
 
 		public SessionTags Tags { get; } = new SessionTags();
@@ -43,7 +45,14 @@ namespace CPL20ArchiveBuilder
 				CommandText = "uspRetrieveSessions"
 			};
 			sqlCommand.Parameters.AddWithValue("@EventId", eventId);
-			const int sessionIdIndex = 0; const int titleIndex = 1; const int abstractIndex = 2; const int summaryIndex = 3; const int sessionPeriodIdIndex = 4; const int sessionLevelIndex = 5; const int sessionTypeIndex = 6;
+			const int sessionIdIndex = 0;
+			const int titleIndex = 1;
+			const int abstractIndex = 2;
+			const int summaryIndex = 3;
+			const int sessionPeriodIdIndex = 4;
+			const int youTubeIdIndex = 5;
+			const int sessionLevelIndex = 6;
+			const int sessionTypeIndex = 7;
 			using SqlDataReader reader = sqlCommand.ExecuteReader();
 			if (reader.HasRows)
 			{
@@ -55,6 +64,7 @@ namespace CPL20ArchiveBuilder
 						Title = reader.GetString(titleIndex),
 						Abstract = reader.GetString(abstractIndex),
 						Summary = reader.GetString(summaryIndex),
+						YouTubeId = reader.IsDBNull(youTubeIdIndex) ? string.Empty : reader.GetString(youTubeIdIndex),
 						SessionLevel = reader.GetString(sessionLevelIndex),
 						SessionType = reader.GetString(sessionTypeIndex),
 						SessionPeriodId = reader.GetInt32(sessionPeriodIdIndex)

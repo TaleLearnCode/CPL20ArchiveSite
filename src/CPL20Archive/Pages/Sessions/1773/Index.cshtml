@@ -1,0 +1,53 @@
+@page
+@model CPL20Archive.Pages.Sessions._1773.IndexModel
+@{
+}
+    <div class="top-title-area bg-img-charcoal-eticket">
+      <div class="container">
+        <h1 class="title-page">Session Details</h1>
+      </div>
+    </div>
+    <div class="gap"></div>
+    <div class="container">
+      <div class="row">
+        <div class="span3">
+          <aside class="sidebar-left">
+            <br />
+            <h5 class="SessionDetails">Topic(s)</h5>
+           <a asp-page="/Sessions/Topic_AppDev">Application Development</a><br />
+            <br />
+            <h5 class="SessionDetails">Tags</h5>
+           <a asp-page="/Sessions/Architecture">Architecture</a><br />
+            <br />
+          </aside>
+        </div>
+        <div class="span9">
+          <h2 id="MainContent_MainContent_SessionTitle" class="SessionDetails">Six Little Lines of Fail</h2>
+          <h5 id="MainContent_MainContent_SessionType" class="SessionDetails">Regular Session</h5>
+          <br />
+         <iframe width="560" height="315" src="https://www.youtube.com/embed/4-N7cEz_hr8" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          It seemed like an easy feature to implement, a checkout page to place an order. But this payment gateway has a simple API, so we added that. And this email service provider makes it possible to send an email with one line of code! Finally we can notify downstream systems via a message queue. The code looks simple, 6 little lines of distributed systems code.
+
+But those lines hid a dark secret that we only found after launching. Customers complained they didn't get their email. The back end system wasn't getting updated from our messages. And by far the worst of all, customers complained they saw an error page but still got charged!
+
+Clearly it wasn't as easy as calling a few APIs and shipping, we actually need to worry about those other systems. In this session, we'll look at taking our 6 lines of distributed systems fail, examining the inevitable failures that arise, and possible mitigating scenarios. We'll also look at the coupling our code contains, and the ways we can address it. Finally, we'll refactor towards a truly resilient checkout process that embraces, instead of ignoring, the fallacies of distributed computing.
+          <hr />
+          <div class="row row-wrap">
+            <div class="span3">
+              <div class="thumb center">
+                <div class="thumb-header">
+                  <a class="hover-img" href="http://codepalousa.com/SpeakerDetails/75144148-0E1D-438A-B70B-3F514CC846F1">
+                    <img src="https://greeneventstechnology.azureedge.net/cpl20/speakers/Jimmy_Bogard.png" alt="Jimmy Bogard" title="Jimmy Bogard" />
+                  </a>
+                </div>
+                <div class="thumb-caption">
+                  <h5 class="thumb-title"><a href="http://codepalousa.com/SpeakerDetails/75144148-0E1D-438A-B70B-3F514CC846F1">Jimmy Bogard</a></h5>
+                  <p class="thumb-meta"><br /></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="gap"></div>
+    </div>

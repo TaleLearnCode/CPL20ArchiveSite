@@ -9,6 +9,7 @@ BEGIN
 				 [Session].Abstract,
 				 [Session].Summary,
 				 [Session].SessionPeriodId,
+				 [Session].YouTubeId,
 				 SessionLevel.Name,
 				 SessionType.Name
 	  FROM [Session]

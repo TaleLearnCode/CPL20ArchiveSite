@@ -1,0 +1,54 @@
+@page
+@model CPL20Archive.Pages.Sessions._1721.IndexModel
+@{
+}
+    <div class="top-title-area bg-img-charcoal-eticket">
+      <div class="container">
+        <h1 class="title-page">Session Details</h1>
+      </div>
+    </div>
+    <div class="gap"></div>
+    <div class="container">
+      <div class="row">
+        <div class="span3">
+          <aside class="sidebar-left">
+            <br />
+            <h5 class="SessionDetails">Topic(s)</h5>
+           <a asp-page="/Sessions/Topic_AppDev">Application Development</a><br />
+            <br />
+            <h5 class="SessionDetails">Tags</h5>
+           <a asp-page="/Sessions/JavaScript">JavaScript</a><br /><a asp-page="/Sessions/UI">UI</a><br /><a asp-page="/Sessions/Data">Data</a><br />
+            <br />
+          </aside>
+        </div>
+        <div class="span9">
+          <h2 id="MainContent_MainContent_SessionTitle" class="SessionDetails">How to Render Twenty Thousand Rows without Crashing Chrome</h2>
+          <h5 id="MainContent_MainContent_SessionType" class="SessionDetails">Regular Session</h5>
+          <br />
+          If you have say twenty thousand rows to render, you probably don’t want to fetch all that data at once and you especially don’t want to render all those rows on page load.   This talk is about how to render only the rows you need and how to just-in-time load data for those rows.
+
+On the frontend,  this means “windowing” or “virtualizing”: only rendering enough rows to fill the view port, with maybe just a few extra.  Rendering only the rows you need means less DOM nodes taking up memory and a quicker initial load time.  I’ll walk through an example of windowing and demonstrate how to optimize windowing performance.  
+
+Next, we’ll look at how the client can just-in-time load chunks of row data as new rows scroll into view.  I'll discuss how to create server endpoints to support the client-side incremental data fetching.
+
+The examples will be using a Node.js server with a React frontend.  However the concepts of windowing and just-in-time data loading are applicable to any tech stack.
+          <hr />
+          <div class="row row-wrap">
+            <div class="span3">
+              <div class="thumb center">
+                <div class="thumb-header">
+                  <a class="hover-img" href="http://codepalousa.com/SpeakerDetails/4C020D76-4AA4-4F04-8D0E-67C2DD9E0AA7">
+                    <img src="https://greeneventstechnology.azureedge.net/cpl20/speakers/Lydia_Cupery.png" alt="Lydia Cupery" title="Lydia Cupery" />
+                  </a>
+                </div>
+                <div class="thumb-caption">
+                  <h5 class="thumb-title"><a href="http://codepalousa.com/SpeakerDetails/4C020D76-4AA4-4F04-8D0E-67C2DD9E0AA7">Lydia Cupery</a></h5>
+                  <p class="thumb-meta"><br /></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="gap"></div>
+    </div>

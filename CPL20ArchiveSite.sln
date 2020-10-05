@@ -10,7 +10,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL", "SQL", "{FDA81906-7B5B-4E8D-B160-412E7F134EFE}"
 	ProjectSection(SolutionItems) = preProject
 		src\SQL\uspRetreiveSocialMediaProviderBaseURL.sql = src\SQL\uspRetreiveSocialMediaProviderBaseURL.sql
-		src\SQL\uspRetrieveSession.sql = src\SQL\uspRetrieveSession.sql
 		src\SQL\uspRetrieveSessions.sql = src\SQL\uspRetrieveSessions.sql
 		src\SQL\uspRetrieveSessionTags.sql = src\SQL\uspRetrieveSessionTags.sql
 		src\SQL\uspRetrieveSessionTopics.sql = src\SQL\uspRetrieveSessionTopics.sql

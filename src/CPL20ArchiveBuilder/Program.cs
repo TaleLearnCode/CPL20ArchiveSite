@@ -46,40 +46,52 @@ namespace CPL20ArchiveBuilder
 			var rootDirectory = @"C:\Code PaLOUsa 2020 Videos\";
 			var pagesPath = @"D:\Repros\TaleLearnCode\CPL20ArchiveSite\src\CPL20Archive\Pages\";
 			var wwwRootPath = @"D:\Repros\TaleLearnCode\CPL20ArchiveSite\src\CPL20Archive\wwwroot\";
-			foreach (string sessionPeriodPath in Directory.GetDirectories(rootDirectory))
+			//foreach (string sessionPeriodPath in Directory.GetDirectories(rootDirectory))
+			//{
+			//	foreach (string sessionPath in Directory.GetDirectories(sessionPeriodPath))
+			//	{
+			//		var sessionPathComponents = sessionPath.Split('\\');
+			//		if (sessions.ContainsKey(Convert.ToInt32(sessionPathComponents[sessionPathComponents.Length - 1])))
+			//		{
+			//			var session = sessions[Convert.ToInt32(sessionPathComponents[sessionPathComponents.Length - 1])];
+			//			Console.WriteLine($"Uploading MP4 for Session {session.Id}");
+			//			//if (!alreadyUploadedVideos.Contains(session.Id.ToString()) && (session.Id != 1779 || session.Id != 1721))
+			//			//{
+			//			//	await UploadVideoAsync(session.Id.ToString(), sessionPath, blobContainerClient);
+			//			//	alreadyUploadedVideos.Add(session.Id.ToString());
+			//			//}
+			//			if (session.Id != 1779 || session.Id != 1721)
+			//				sessions[session.Id].VideoUploaded = true;
+			//			var path = $@"{pagesPath}sessions\{session.Id}\";
+			//			Directory.CreateDirectory(path);
+			//			Console.WriteLine($"Writing session pages for Session {session.Id}");
+
+			//			var cshtmlPath = @$"{pagesPath}Sessions\{session.Id}\";
+			//			Directory.CreateDirectory(cshtmlPath);
+			//			File.WriteAllText($"{cshtmlPath}Index.cshtml", BuildIndexPage(session, sessionTags));
+			//			File.WriteAllText($"{cshtmlPath}Index.cshtml.cs", BuildIndexCSFile(session.Id));
+
+			//			var sessionEmbedPath = @$"{wwwRootPath}sessions\{session.Id}\";
+			//			Directory.CreateDirectory(sessionEmbedPath);
+			//			File.WriteAllText($"{sessionEmbedPath}player.html", BuildPlayerPage(session));
+			//			File.WriteAllText($"{sessionEmbedPath}config.xml", BuildConfigXML(session));
+			//			File.WriteAllText($"{sessionEmbedPath}config_xml.js", BuildConfigXMLJs(session));
+			//			Console.WriteLine();
+			//		}
+			//	}
+			//}
+
+
+			foreach (var session in sessions.Values)
 			{
-				foreach (string sessionPath in Directory.GetDirectories(sessionPeriodPath))
-				{
-					var sessionPathComponents = sessionPath.Split('\\');
-					if (sessions.ContainsKey(Convert.ToInt32(sessionPathComponents[sessionPathComponents.Length - 1])))
-					{
-						var session = sessions[Convert.ToInt32(sessionPathComponents[sessionPathComponents.Length - 1])];
-						Console.WriteLine($"Uploading MP4 for Session {session.Id}");
-						//if (!alreadyUploadedVideos.Contains(session.Id.ToString()) && (session.Id != 1779 || session.Id != 1721))
-						//{
-						//	await UploadVideoAsync(session.Id.ToString(), sessionPath, blobContainerClient);
-						//	alreadyUploadedVideos.Add(session.Id.ToString());
-						//}
-						if (session.Id != 1779 || session.Id != 1721)
-							sessions[session.Id].VideoUploaded = true;
-						var path = $@"{pagesPath}sessions\{session.Id}\";
-						Directory.CreateDirectory(path);
-						Console.WriteLine($"Writing session pages for Session {session.Id}");
-
-						var cshtmlPath = @$"{pagesPath}Sessions\{session.Id}\";
-						Directory.CreateDirectory(cshtmlPath);
-						File.WriteAllText($"{cshtmlPath}Index.cshtml", BuildIndexPage(session, sessionTags));
-						File.WriteAllText($"{cshtmlPath}Index.cshtml.cs", BuildIndexCSFile(session.Id));
-
-						var sessionEmbedPath = @$"{wwwRootPath}sessions\{session.Id}\";
-						Directory.CreateDirectory(sessionEmbedPath);
-						File.WriteAllText($"{sessionEmbedPath}player.html", BuildPlayerPage(session));
-						File.WriteAllText($"{sessionEmbedPath}config.xml", BuildConfigXML(session));
-						File.WriteAllText($"{sessionEmbedPath}config_xml.js", BuildConfigXMLJs(session));
-						Console.WriteLine();
-					}
-				}
+				var cshtmlPath = @$"{pagesPath}Sessions\{session.Id}\";
+				Directory.CreateDirectory(cshtmlPath);
+				File.WriteAllText($"{cshtmlPath}Index.cshtml", BuildIndexPage(session, sessionTags));
+				File.WriteAllText($"{cshtmlPath}Index.cshtml.cs", BuildIndexCSFile(session.Id));
+				if (!string.IsNullOrWhiteSpace(session.YouTubeId))
+					sessions[session.Id].VideoUploaded = true;
 			}
+
 
 			BuildSchedulePages(sessions.Values.ToList(), pagesPath);
 			BuildTagPages(sessions.Values.ToList(), sessionTags, pagesPath);
@@ -88,11 +100,6 @@ namespace CPL20ArchiveBuilder
 			File.WriteAllLines(logFileLocation, alreadyUploadedVideos.ToArray());
 
 			Console.WriteLine("Done");
-
-
-
-
-
 
 		}
 
@@ -126,9 +133,8 @@ namespace CPL20ArchiveBuilder
 			indexPage.AppendLine($"          <h2 id=\"MainContent_MainContent_SessionTitle\" class=\"SessionDetails\">{session.Title}</h2>");
 			indexPage.AppendLine($"          <h5 id=\"MainContent_MainContent_SessionType\" class=\"SessionDetails\">{session.SessionType}</h5>");
 			indexPage.AppendLine("          <br />");
-			indexPage.AppendLine("          <div class=\"smart-player-embed-container\">");
-			indexPage.AppendLine($"            <iframe class=\"smart-player-embed-iframe\" id=\"embeddedSmartPlayerInstance\" src=\"~/sessions/{session.Id}/player.html\" scrolling=\"no\" frameborder=\"0\" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>");
-			indexPage.AppendLine("          </div>");
+			if (!string.IsNullOrWhiteSpace(session.YouTubeId))
+				indexPage.AppendLine($"         <iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/{session.YouTubeId}\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>");
 			indexPage.AppendLine($"          {session.Abstract}");
 			indexPage.AppendLine("          <hr />");
 			indexPage.AppendLine("          <div class=\"row row-wrap\">");
