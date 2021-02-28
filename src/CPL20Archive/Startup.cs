@@ -26,12 +26,14 @@ namespace CPL20Archive
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddAuthentication(AzureADB2CDefaults.AuthenticationScheme)
-					.AddAzureADB2C(options => Configuration.Bind("AzureAdB2C", options));
-			services.AddRazorPages(options =>
-			{ 
-				options.Conventions.AuthorizeFolder("/Sessions");
-			});
+			//services.AddAuthentication(AzureADB2CDefaults.AuthenticationScheme)
+			//		.AddAzureADB2C(options => Configuration.Bind("AzureAdB2C", options));
+			//services.AddRazorPages(options =>
+			//{ 
+			//	options.Conventions.AuthorizeFolder("/Sessions");
+			//});
+
+			services.AddRazorPages();
 
 			//services.AddAuthorization(options =>
 			//{

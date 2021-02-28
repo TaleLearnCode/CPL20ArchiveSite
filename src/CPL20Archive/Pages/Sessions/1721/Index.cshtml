@@ -25,6 +25,7 @@
           <h2 id="MainContent_MainContent_SessionTitle" class="SessionDetails">How to Render Twenty Thousand Rows without Crashing Chrome</h2>
           <h5 id="MainContent_MainContent_SessionType" class="SessionDetails">Regular Session</h5>
           <br />
+         <iframe width="560" height="315" src="https://www.youtube.com/embed/HgLX8tgC7SM" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           If you have say twenty thousand rows to render, you probably don’t want to fetch all that data at once and you especially don’t want to render all those rows on page load.   This talk is about how to render only the rows you need and how to just-in-time load data for those rows.
 
 On the frontend,  this means “windowing” or “virtualizing”: only rendering enough rows to fill the view port, with maybe just a few extra.  Rendering only the rows you need means less DOM nodes taking up memory and a quicker initial load time.  I’ll walk through an example of windowing and demonstrate how to optimize windowing performance.  
