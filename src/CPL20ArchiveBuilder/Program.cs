@@ -14,6 +14,7 @@ namespace CPL20ArchiveBuilder
 	public class Program
 	{
 
+		private static int _eventId = 11;
 		public static async Task Main()
 		{
 
@@ -34,8 +35,8 @@ namespace CPL20ArchiveBuilder
 						alreadyUploadedVideos.Add(line);
 			}
 
-			var speakers = Speakers.GetSpeakersForEvent(10, sqlConnection);
-			var sessions = Session.GetSessionForEvent(10, sqlConnection, speakers);
+			var speakers = Speakers.GetSpeakersForEvent(_eventId, sqlConnection);
+			var sessions = Session.GetSessionForEvent(_eventId, sqlConnection, speakers);
 			var sessionTags = SessionTags.GetTags(sqlConnection);
 
 			sqlConnection.Close();
@@ -44,8 +45,8 @@ namespace CPL20ArchiveBuilder
 			Console.WriteLine("Building session pages...");
 
 			var rootDirectory = @"C:\Code PaLOUsa 2020 Videos\";
-			var pagesPath = @"D:\Repros\TaleLearnCode\CPL20ArchiveSite\src\CPL20Archive\Pages\";
-			var wwwRootPath = @"D:\Repros\TaleLearnCode\CPL20ArchiveSite\src\CPL20Archive\wwwroot\";
+			var pagesPath = @"D:\Repos\TaleLearnCode\CPL\src\CPL20Archive\Pages\";
+			var wwwRootPath = @"D:\Repos\TaleLearnCode\CPL\src\CPL20Archive\wwwroot\";
 			//foreach (string sessionPeriodPath in Directory.GetDirectories(rootDirectory))
 			//{
 			//	foreach (string sessionPath in Directory.GetDirectories(sessionPeriodPath))
@@ -82,7 +83,7 @@ namespace CPL20ArchiveBuilder
 			//}
 
 
-			foreach (var session in sessions.Values)
+			foreach (Session session in sessions.Values)
 			{
 				var cshtmlPath = @$"{pagesPath}Sessions\{session.Id}\";
 				Directory.CreateDirectory(cshtmlPath);
@@ -94,7 +95,7 @@ namespace CPL20ArchiveBuilder
 
 
 			BuildSchedulePages(sessions.Values.ToList(), pagesPath);
-			BuildTagPages(sessions.Values.ToList(), sessionTags, pagesPath);
+			//BuildTagPages(sessions.Values.ToList(), sessionTags, pagesPath);
 			BuildTopicPages(sessions.Values.ToList(), pagesPath);
 
 			File.WriteAllLines(logFileLocation, alreadyUploadedVideos.ToArray());
@@ -124,9 +125,9 @@ namespace CPL20ArchiveBuilder
 			indexPage.AppendLine("            <h5 class=\"SessionDetails\">Topic(s)</h5>");
 			indexPage.AppendLine($"           {session.Topics.GetAsideLinks()}");
 			indexPage.AppendLine("            <br />");
-			indexPage.AppendLine("            <h5 class=\"SessionDetails\">Tags</h5>");
-			indexPage.AppendLine($"           {session.Tags.GetAsideLinks(tags)}");
-			indexPage.AppendLine("            <br />");
+			//indexPage.AppendLine("            <h5 class=\"SessionDetails\">Tags</h5>");
+			//indexPage.AppendLine($"           {session.Tags.GetAsideLinks(tags)}");
+			//indexPage.AppendLine("            <br />");
 			indexPage.AppendLine("          </aside>");
 			indexPage.AppendLine("        </div>");
 			indexPage.AppendLine("        <div class=\"span9\">");
@@ -144,7 +145,7 @@ namespace CPL20ArchiveBuilder
 				indexPage.AppendLine("              <div class=\"thumb center\">");
 				indexPage.AppendLine("                <div class=\"thumb-header\">");
 				indexPage.AppendLine($"                  <a class=\"hover-img\" href=\"http://codepalousa.com/SpeakerDetails/{speaker.Id}\">");
-				indexPage.AppendLine($"                    <img src=\"https://greeneventstechnology.azureedge.net/cpl20/speakers/{speaker.FirstName}_{speaker.LastName}.png\" alt=\"{speaker.FirstName} {speaker.LastName}\" title=\"{speaker.FirstName} {speaker.LastName}\" />");
+				indexPage.AppendLine($"                    <img src=\"https://greeneventstechnology.azureedge.net/cpl20/speakers/{speaker.FirstName.Cleanup()}_{speaker.LastName.Cleanup()}.png\" alt=\"{speaker.FirstName} {speaker.LastName}\" title=\"{speaker.FirstName} {speaker.LastName}\" />");
 				indexPage.AppendLine("                  </a>");
 				indexPage.AppendLine("                </div>");
 				indexPage.AppendLine("                <div class=\"thumb-caption\">");
@@ -223,7 +224,7 @@ namespace CPL20ArchiveBuilder
 			playerPage.AppendLine("        TSC.playerConfiguration.setSidebarEnabled(false);");
 			playerPage.AppendLine("");
 			playerPage.AppendLine("        TSC.playerConfiguration.setAutoPlayMedia(false);");
-			playerPage.AppendLine($"        TSC.playerConfiguration.setPosterImageSrc(\"https://greeneventstechnology.azureedge.net/cpl20/thumbnails/{session.Id}.jpg\");");
+			playerPage.AppendLine($"        TSC.playerConfiguration.setPosterImageSrc(\"https://greeneventstechnology.azureedge.net/cpl20/thumbnails/{session.Id}.png\");");
 			playerPage.AppendLine("        TSC.playerConfiguration.setIsSearchable(true);");
 			playerPage.AppendLine("        TSC.playerConfiguration.setEndActionType(\"stop\");");
 			playerPage.AppendLine("        TSC.playerConfiguration.setEndActionParam(\"true\");");
@@ -252,7 +253,7 @@ namespace CPL20ArchiveBuilder
 			var configXML = new StringBuilder();
 			configXML.AppendLine("<x:xmpmeta tsc:version=\"2.0.1\" xmlns:x=\"adobe:ns:meta/\" xmlns:tsc=\"http://www.techsmith.com/xmp/tsc/\">");
 			configXML.AppendLine("   <rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:xmp=\"http://ns.adobe.com/xap/1.0/\" xmlns:xmpDM=\"http://ns.adobe.com/xmp/1.0/DynamicMedia/\" xmlns:xmpG=\"http://ns.adobe.com/xap/1.0/g/\" xmlns:xmpMM=\"http://ns.adobe.com/xap/1.0/mm/\" xmlns:tscDM=\"http://www.techsmith.com/xmp/tscDM/\" xmlns:tscIQ=\"http://www.techsmith.com/xmp/tscIQ/\" xmlns:tscHS=\"http://www.techsmith.com/xmp/tscHS/\" xmlns:stDim=\"http://ns.adobe.com/xap/1.0/sType/Dimensions#\" xmlns:stFnt=\"http://ns.adobe.com/xap/1.0/sType/Font#\" xmlns:exif=\"http://ns.adobe.com/exif/1.0\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\">");
-			configXML.AppendLine($"      <rdf:Description dc:date=\"{DateTime.UtcNow:yyyy-MM-dd hh:mm:ss tt}\" dc:source=\"Camtasia,20.0.7,enu\" dc:title=\"{session.Id}\" tscDM:firstFrame=\"https://greeneventstechnology.azureedge.net/cpl20/thumbnails/{session.Id}.jpg\" tscDM:originId=\"F02DFD84-CD76-4FF1-B6E7-7636DA8D96AA\" tscDM:project=\"{session.Id}\">");
+			configXML.AppendLine($"      <rdf:Description dc:date=\"{DateTime.UtcNow:yyyy-MM-dd hh:mm:ss tt}\" dc:source=\"Camtasia,20.0.7,enu\" dc:title=\"{session.Id}\" tscDM:firstFrame=\"https://greeneventstechnology.azureedge.net/cpl20/thumbnails/{session.Id}.png\" tscDM:originId=\"F02DFD84-CD76-4FF1-B6E7-7636DA8D96AA\" tscDM:project=\"{session.Id}\">");
 			configXML.AppendLine("         <xmpDM:duration xmpDM:scale=\"1/1000\" xmpDM:value=\"2413716\"/>");
 			configXML.AppendLine("         <xmpDM:videoFrameSize stDim:unit=\"pixel\" stDim:h=\"720\" stDim:w=\"1280\"/>");
 			configXML.AppendLine("         <tsc:langName>");
@@ -279,7 +280,7 @@ namespace CPL20ArchiveBuilder
 			configXML.AppendLine("            <rdf:Description>");
 			configXML.AppendLine("               <tscDM:files>");
 			configXML.AppendLine("                  <rdf:Seq>");
-			configXML.AppendLine($"                     <rdf:li xmpDM:name=\"0\" xmpDM:value=\"{session.Id}.mp4\"/><rdf:li xmpDM:name=\"1\" xmpDM:value=\"https://greeneventstechnology.azureedge.net/cpl20/thumbnails/{session.Id}.jpg\"/><rdf:li xmpDM:name=\"2\" xmpDM:value=\"https://greeneventstechnology.azureedge.net/cpl20/thumbnails/{session.Id}.jpg\"/></rdf:Seq>");
+			configXML.AppendLine($"                     <rdf:li xmpDM:name=\"0\" xmpDM:value=\"{session.Id}.mp4\"/><rdf:li xmpDM:name=\"1\" xmpDM:value=\"https://greeneventstechnology.azureedge.net/cpl20/thumbnails/{session.Id}.png\"/><rdf:li xmpDM:name=\"2\" xmpDM:value=\"https://greeneventstechnology.azureedge.net/cpl20/thumbnails/{session.Id}.png\"/></rdf:Seq>");
 			configXML.AppendLine("               </tscDM:files>");
 			configXML.AppendLine("            </rdf:Description>");
 			configXML.AppendLine("         </tscDM:contentList>");
@@ -296,7 +297,7 @@ namespace CPL20ArchiveBuilder
 			js.AppendLine("");
 			js.AppendLine("TSC.embedded_config_xml = '<x:xmpmeta tsc:version=\"2.0.1\" xmlns:x=\"adobe:ns:meta/\" xmlns:tsc=\"http://www.techsmith.com/xmp/tsc/\">\\");
 			js.AppendLine("   <rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:xmp=\"http://ns.adobe.com/xap/1.0/\" xmlns:xmpDM=\"http://ns.adobe.com/xmp/1.0/DynamicMedia/\" xmlns:xmpG=\"http://ns.adobe.com/xap/1.0/g/\" xmlns:xmpMM=\"http://ns.adobe.com/xap/1.0/mm/\" xmlns:tscDM=\"http://www.techsmith.com/xmp/tscDM/\" xmlns:tscIQ=\"http://www.techsmith.com/xmp/tscIQ/\" xmlns:tscHS=\"http://www.techsmith.com/xmp/tscHS/\" xmlns:stDim=\"http://ns.adobe.com/xap/1.0/sType/Dimensions#\" xmlns:stFnt=\"http://ns.adobe.com/xap/1.0/sType/Font#\" xmlns:exif=\"http://ns.adobe.com/exif/1.0\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\\");
-			js.AppendLine($"      <rdf:Description dc:date=\"2020-09-03 10:27:14 PM\" dc:source=\"Camtasia,20.0.7,enu\" dc:title=\"1658\" tscDM:firstFrame=\"https://greeneventstechnology.azureedge.net/cpl20/thumbnails/{session.Id}.jpg\" tscDM:originId=\"F02DFD84-CD76-4FF1-B6E7-7636DA8D96AA\" tscDM:project=\"{session.Id}\">\\");
+			js.AppendLine($"      <rdf:Description dc:date=\"2020-09-03 10:27:14 PM\" dc:source=\"Camtasia,20.0.7,enu\" dc:title=\"1658\" tscDM:firstFrame=\"https://greeneventstechnology.azureedge.net/cpl20/thumbnails/{session.Id}.png\" tscDM:originId=\"F02DFD84-CD76-4FF1-B6E7-7636DA8D96AA\" tscDM:project=\"{session.Id}\">\\");
 			js.AppendLine("         <xmpDM:duration xmpDM:scale=\"1/1000\" xmpDM:value=\"2413716\"/>\\");
 			js.AppendLine("         <xmpDM:videoFrameSize stDim:unit=\"pixel\" stDim:h=\"720\" stDim:w=\"1280\"/>\\");
 			js.AppendLine("         <tsc:langName>\\");
@@ -323,7 +324,7 @@ namespace CPL20ArchiveBuilder
 			js.AppendLine("            <rdf:Description>\\");
 			js.AppendLine("               <tscDM:files>\\");
 			js.AppendLine("                  <rdf:Seq>\\");
-			js.AppendLine($"                     <rdf:li xmpDM:name=\"0\" xmpDM:value=\"1658.mp4\"/><rdf:li xmpDM:name=\"1\" xmpDM:value=\"https://greeneventstechnology.azureedge.net/cpl20/thumbnails/{session.Id}.jpg\"/><rdf:li xmpDM:name=\"2\" xmpDM:value=\"https://greeneventstechnology.azureedge.net/cpl20/thumbnails/{session.Id}.jpg\"/></rdf:Seq>\\");
+			js.AppendLine($"                     <rdf:li xmpDM:name=\"0\" xmpDM:value=\"1658.mp4\"/><rdf:li xmpDM:name=\"1\" xmpDM:value=\"https://greeneventstechnology.azureedge.net/cpl20/thumbnails/{session.Id}.png\"/><rdf:li xmpDM:name=\"2\" xmpDM:value=\"https://greeneventstechnology.azureedge.net/cpl20/thumbnails/{session.Id}.png\"/></rdf:Seq>\\");
 			js.AppendLine("               </tscDM:files>\\");
 			js.AppendLine("            </rdf:Description>\\");
 			js.AppendLine("         </tscDM:contentList>\\");
@@ -360,19 +361,19 @@ namespace CPL20ArchiveBuilder
 
 			var sessionPeriods = new Dictionary<int, (string Name, string NormalizedName)>
 			{
-				{ 105, ("Workshops", "Workshops") },
-				{ 108, ("Period 1", "Period1") },
-				{ 109, ("Period 2", "Period2") },
-				{ 110, ("Period 3", "Period3") },
-				{ 111, ("Period 4", "Period4") },
-				{ 112, ("Period 5", "Period5") },
-				{ 113, ("Period 6", "Period6") },
-				{ 114, ("Period 7", "Period7") },
-				{ 115, ("Period 8", "Period8") },
-				{ 116, ("Period 9", "Period9") },
-				{ 117, ("Period 10", "Period10") },
-				{ 118, ("Period 11", "Period11") },
-				{ 119, ("Keynote", "Keynote") }
+				{ 122, ("Workshops", "Workshops") },
+				{ 125, ("Period 1", "Period1") },
+				{ 126, ("Period 2", "Period2") },
+				{ 127, ("Period 3", "Period3") },
+				{ 128, ("Period 4", "Period4") },
+				{ 129, ("Period 5", "Period5") },
+				{ 130, ("Period 6", "Period6") },
+				{ 131, ("Period 7", "Period7") },
+				{ 132, ("Period 8", "Period8") },
+				{ 133, ("Period 9", "Period9") },
+				{ 134, ("Period 10", "Period10") },
+				{ 135, ("Period 11", "Period11") },
+				{ 136, ("Keynote", "Keynote") }
 			};
 
 			var sessionPages = new Dictionary<int, StringBuilder>();
@@ -381,13 +382,13 @@ namespace CPL20ArchiveBuilder
 
 			foreach (var session in sessions)
 			{
-				if (session.SessionPeriodId != 121)
+				if (session.SessionPeriodId != 137 && session.SessionPeriodId != 140)
 				{
 					var sessionListing = new StringBuilder();
 					sessionListing.AppendLine("  <div class=\"row\">");
 					sessionListing.AppendLine("    <div class=\"span4\">");
 					sessionListing.AppendLine($"      <a asp-page=\"/Sessions/{session.Id}/Index\">");
-					sessionListing.AppendLine($"        <img style=\"width: 320px; height: 180px\" src=\"https://greeneventstechnology.azureedge.net/cpl20/thumbnails/{session.Id}.jpg\" />");
+					sessionListing.AppendLine($"        <img style=\"width: 320px; height: 180px\" src=\"https://greeneventstechnology.azureedge.net/cpl20/thumbnails/{session.Id}.png\" />");
 					sessionListing.AppendLine("       </a>");
 					sessionListing.AppendLine("    </div>");
 					sessionListing.AppendLine("    <div class=\"span8\">");
@@ -403,8 +404,8 @@ namespace CPL20ArchiveBuilder
 					sessionListing.AppendLine("    </div>");
 					sessionListing.AppendLine("  </div>");
 					sessionListing.AppendLine("  <hr />");
-					if (session.SessionPeriodId == 106 || session.SessionPeriodId == 107 || session.SessionPeriodId == 120)
-						sessionPages[105].Append(sessionListing.ToString());
+					if (session.SessionPeriodId == 123 || session.SessionPeriodId == 124 || session.SessionPeriodId == 138 || session.SessionPeriodId == 139)
+						sessionPages[122].Append(sessionListing.ToString());
 					else
 						sessionPages[session.SessionPeriodId].Append(sessionListing.ToString());
 				}
@@ -441,7 +442,7 @@ namespace CPL20ArchiveBuilder
 					sessionListing.AppendLine("  <div class=\"row\">");
 					sessionListing.AppendLine("    <div class=\"span4\">");
 					sessionListing.AppendLine($"      <a asp-page=\"/Sessions/{session.Id}/Index\">");
-					sessionListing.AppendLine($"        <img style=\"width: 320px; height: 180px\" src=\"https://greeneventstechnology.azureedge.net/cpl20/thumbnails/{session.Id}.jpg\" />");
+					sessionListing.AppendLine($"        <img style=\"width: 320px; height: 180px\" src=\"https://greeneventstechnology.azureedge.net/cpl20/thumbnails/{session.Id}.png\" />");
 					sessionListing.AppendLine("       </a>");
 					sessionListing.AppendLine("    </div>");
 					sessionListing.AppendLine("    <div class=\"span8\">");
@@ -497,7 +498,7 @@ namespace CPL20ArchiveBuilder
 					sessionListing.AppendLine("  <div class=\"row\">");
 					sessionListing.AppendLine("    <div class=\"span4\">");
 					sessionListing.AppendLine($"      <a asp-page=\"/Sessions/{session.Id}/Index\">");
-					sessionListing.AppendLine($"        <img style=\"width: 320px; height: 180px\" src=\"https://greeneventstechnology.azureedge.net/cpl20/thumbnails/{session.Id}.jpg\" />");
+					sessionListing.AppendLine($"        <img style=\"width: 320px; height: 180px\" src=\"https://greeneventstechnology.azureedge.net/cpl20/thumbnails/{session.Id}.png\" />");
 					sessionListing.AppendLine("       </a>");
 					sessionListing.AppendLine("    </div>");
 					sessionListing.AppendLine("    <div class=\"span8\">");

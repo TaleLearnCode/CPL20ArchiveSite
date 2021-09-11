@@ -34,6 +34,12 @@ namespace CPL20ArchiveBuilder
 
 		public static Dictionary<int, Session> GetSessionForEvent(int eventId, SqlConnection sqlConnection, Speakers eventSpeakers)
 		{
+
+			List<int> sessionsToRemove = new List<int>();
+			sessionsToRemove.Add(2030);
+			sessionsToRemove.Add(1988);
+			sessionsToRemove.Add(2059);
+
 			int totalSessionCount = GetNumberOfSessions();
 			int counter = 0;
 			using ProgressBar progressBar = new ProgressBar(totalSessionCount, "Retrieving session");
@@ -58,7 +64,7 @@ namespace CPL20ArchiveBuilder
 			{
 				while (reader.Read())
 				{
-					var session = new Session()
+					Session session = new Session()
 					{
 						Id = reader.GetInt32(sessionIdIndex),
 						Title = reader.GetString(titleIndex),
@@ -69,13 +75,16 @@ namespace CPL20ArchiveBuilder
 						SessionType = reader.GetString(sessionTypeIndex),
 						SessionPeriodId = reader.GetInt32(sessionPeriodIdIndex)
 					};
+					if (session.Id == 2023)
+						session.Title = "TinyML and SkySharks 🦈🦈🦈";
 					if (session.SessionPeriodId == 106 || session.SessionPeriodId == 107 || session.SessionPeriodId == 120)
 						session.SessionPeriodId = 105;
 					foreach (var speakerId in Speakers.GetSpeakerIdsForSession(session.Id, sqlConnection))
 						session.SessionSpeakers.Add(eventSpeakers[speakerId]);
 					session.Topics.GetSessionTopics(reader.GetInt32(sessionIdIndex), sqlConnection);
 					session.Tags.GetSessionTags(reader.GetInt32(sessionIdIndex), sqlConnection);
-					sessions.Add(session.Id, session);
+					if (!sessionsToRemove.Contains(session.Id))
+						sessions.Add(session.Id, session);
 					counter++;
 					progressBar.Tick($"Retrieved {counter} of {totalSessionCount} sessions");
 				}

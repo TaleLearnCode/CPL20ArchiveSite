@@ -1,0 +1,101 @@
+@page
+@model CPL20Archive.Pages.Sessions._1987.IndexModel
+@{
+}
+    <div class="top-title-area bg-img-charcoal-eticket">
+      <div class="container">
+        <h1 class="title-page">Session Details</h1>
+      </div>
+    </div>
+    <div class="gap"></div>
+    <div class="container">
+      <div class="row">
+        <div class="span3">
+          <aside class="sidebar-left">
+            <br />
+            <h5 class="SessionDetails">Topic(s)</h5>
+           <a asp-page="Sessions/Topic_Testing" > Software Testing</a><br />
+            <br />
+          </aside>
+        </div>
+        <div class="span9">
+          <h2 id="MainContent_MainContent_SessionTitle" class="SessionDetails">4 Pillars of Successful Agile Test Automation.</h2>
+          <h5 id="MainContent_MainContent_SessionType" class="SessionDetails">Regular Session</h5>
+          <br />
+         <iframe width="560" height="315" src="https://www.youtube.com/embed/GC0R_Zss7H0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          Motivation: 
+-------------
+I wrapped up my experiences including lots of challenges in both technical and social manners from the automation projects to test complicated systems such as cloud-based open IOT platforms. Finally, I listed a set of golden rules to develop solutions against those challenges and successfully manage a test project. The purpose of this talk is to give insights about how a test automation project is managed.  
+
+Our problems were:
+----------------
+**Technically**, if not managed properly, automated testing will lead to extra costs and could even be less effective than manual testing.
+From another aspect, **socially**, at some point, we had too many complaints in our retrospective meetings about the heavy deployment activities and redundant executions. Everyone was sick and tired of maintenance issues stemming from lots of flaky tests and execution lists full of not clear test definitions. The team was not happy
+
+Our 4 fundamental solutions are:
+--------------
+* True agility: Adapt new solutions quickly. 
+* KPIs and monitoring activities via tools like CloudWatch, Grafana
+* Robustness in automation framework. 
+
+   + Solutions to reduce flaky tests like **Endpoint API polling libraries, Selenium Grid usage, safe wait methods, test design techniques, test history in the pipelines, develop helper methods** and others.
+   + **Before and after situations** to see the effects of solutions.
+   + Improve coverage from different aspects to reduce **escaped bugs**.
+
+* Team spirit! 
+
+Results & Conclusion
+---------
+After application of our proposals, we observed that waste is eliminated by removing dispensable work. After all, we believe that this submission has interesting content which can make great attention. Instead of theoretical claims, we discuss faced challenges and applied solutions. We analyze effects of solutions with before-after situations, graphs and evidence. Instead of what to do, we go over how to do it. 
+
+Takeaways
+-----------
+Proposed approaches can be applied by any organization by adapting according to the related work to achieve time and cost reduction. After this talk:
+
+* Attendees will know our 4 golden milestones for successful agile testing: Being truly agile, Managing and improving internal processes, building a Good Automation Framework and Improving Efficiency. 
+* Attendees will be able to realize the importance of test coverage and see how it affects defects coming from production. 
+* Attendees will be able to realize the effect of test suites on sprint planning and execution effort. 
+* Attendees will be able to have some insights about increasing efficiency. 
+* Attendees will be able to utilize automation not only in implementation, but also in Executions, Reporting and other phases. 
+* Attendees will be able to analyze bugs. Just resolve and close them, or gain some lessons-learnt from them?
+
+
+Outline
+-----------
+Introduction 
+
+-----------
+Importance of agility: Quality mindset, voice of customer
+
+--------------
+Monitoring activities: Metrics.
+Demo 1: Collecting KPIs & metrics and monitor them on CloudWatch.
+
+--------------
+Automation Principles
+Demo 2: Code Blocks to reduce test smells on Java, Postman and Selenium.
+----------------
+Efficiency & Team Productivity
+
+--------------
+Closure & Questions
+          <hr />
+          <div class="row row-wrap">
+            <div class="span3">
+              <div class="thumb center">
+                <div class="thumb-header">
+                  <a class="hover-img" href="http://codepalousa.com/SpeakerDetails/0DFBBE37-806A-497E-8F90-444A0783EE81">
+                    <img src="https://greeneventstechnology.azureedge.net/cpl20/speakers/Mesut_Durukal.png" alt="Mesut Durukal" title="Mesut Durukal" />
+                  </a>
+                </div>
+                <div class="thumb-caption">
+                  <h5 class="thumb-title"><a href="http://codepalousa.com/SpeakerDetails/0DFBBE37-806A-497E-8F90-444A0783EE81">Mesut Durukal</a></h5>
+                  <p class="thumb-meta"><br /></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="gap"></div>
+    </div>

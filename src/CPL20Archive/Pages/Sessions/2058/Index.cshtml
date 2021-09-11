@@ -1,0 +1,50 @@
+@page
+@model CPL20Archive.Pages.Sessions._2058.IndexModel
+@{
+}
+    <div class="top-title-area bg-img-charcoal-eticket">
+      <div class="container">
+        <h1 class="title-page">Session Details</h1>
+      </div>
+    </div>
+    <div class="gap"></div>
+    <div class="container">
+      <div class="row">
+        <div class="span3">
+          <aside class="sidebar-left">
+            <br />
+            <h5 class="SessionDetails">Topic(s)</h5>
+           <a asp-page="/Sessions/Topic_AppDev">Application Development</a><br />
+            <br />
+          </aside>
+        </div>
+        <div class="span9">
+          <h2 id="MainContent_MainContent_SessionTitle" class="SessionDetails">A Guided Tour of Caching Patterns</h2>
+          <h5 id="MainContent_MainContent_SessionType" class="SessionDetails">Regular Session</h5>
+          <br />
+          When your application starts slowing down, the reason is probably a bottleneck somewhere in the execution chain. Sometimes, this bottleneck is due to a bug. Sometimes, somebody didn’t set up the optimal configuration. And sometimes, the process of fetching the data is the bottleneck.
+
+One option would be to change your whole architecture. Before moving to such a drastic, and probably expensive measure, one can consider a trade-off: instead of getting remote data every time, you can store the data locally after the first read. This is the trade-off that caching offers: stale data vs. speed.
+
+Deciding to use caching is just the first step in a long journey. The next step is to think about how your application and the cache will interact. This talk focuses on options available regarding those interactions.
+
+          <hr />
+          <div class="row row-wrap">
+            <div class="span3">
+              <div class="thumb center">
+                <div class="thumb-header">
+                  <a class="hover-img" href="http://codepalousa.com/SpeakerDetails/9F504CF5-2A2E-488D-A6A7-A6A28ECBDB00">
+                    <img src="https://greeneventstechnology.azureedge.net/cpl20/speakers/Nicolas_Fränkel.png" alt="Nicolas Fränkel" title="Nicolas Fränkel" />
+                  </a>
+                </div>
+                <div class="thumb-caption">
+                  <h5 class="thumb-title"><a href="http://codepalousa.com/SpeakerDetails/9F504CF5-2A2E-488D-A6A7-A6A28ECBDB00">Nicolas Fränkel</a></h5>
+                  <p class="thumb-meta"><br /></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="gap"></div>
+    </div>

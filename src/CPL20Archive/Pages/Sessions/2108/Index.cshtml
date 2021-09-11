@@ -1,0 +1,78 @@
+@page
+@model CPL20Archive.Pages.Sessions._2108.IndexModel
+@{
+}
+    <div class="top-title-area bg-img-charcoal-eticket">
+      <div class="container">
+        <h1 class="title-page">Session Details</h1>
+      </div>
+    </div>
+    <div class="gap"></div>
+    <div class="container">
+      <div class="row">
+        <div class="span3">
+          <aside class="sidebar-left">
+            <br />
+            <h5 class="SessionDetails">Topic(s)</h5>
+           <a asp-page="/Sessions/Topic_AppDev">Application Development</a><br />
+            <br />
+          </aside>
+        </div>
+        <div class="span9">
+          <h2 id="MainContent_MainContent_SessionTitle" class="SessionDetails">TaDa it's Magic: Predicting the Performance of Functions through Automated Doubling Experiments</h2>
+          <h5 id="MainContent_MainContent_SessionType" class="SessionDetails">Regular Session</h5>
+          <br />
+          When you deploy a program to a cloud-based execution environment, it is important that you understand its performance --- or you may end up with a expensive bill from your cloud provider! With that said, if you have tried to understand the performance of a function in your program you might have found yourself overwhelmed by the number of performance evaluation tools for different languages and platforms. If your experience is anything like mine, then you might have found the process confusing since, even though many tools have a significant number of configurations, they often don't share performance results in the most helpful fashion. Faced with the challenge of understanding the performance of a Python function as its inputs grow bigger, we built a tool called TaDa, available at https://github.com/Tada-Project/tada, that automatically conducts an experiment and determines the likely "order of growth" for a Python function. Although this talk introduces ways to evaluate the performance of Python functions that could run in AWS Lambda, the lessons that attendees learn can also translate to other languages and cloud computing platforms.
+
+After overviewing the idea of a doubling experiment, this presentation will explain the inputs, outputs, and behavior of TaDa. For example, TaDa can help you to pick between two different implementations of the same function. If TaDa predicts that the order-of-growth for one implementation is logarithmic and quadratic for another, then a developer should pick the function that TaDa identifies as having a logarithmic order-of-growth. TaDa can also help developers to better understand the performance of a specific function by revealing that its order-of-growth is, for instance, likely to be cubic when inputs increase in size and thus in need of significant speed improvements before deployment to AWS. Although these concepts may, at first glance, seem both confusing and to good to be true, this presentation will give viewers an eye-opening understanding of how to use TaDa to gain insights into the performance of Python functions. Ultimately, the people who attend this session will learn foundational concepts and practical skills that will help them to either use TaDa in their Python project or build and use their own TaDa-like tool for their own software.
+
+
+Summary of what people will learn by attending this talk:
+
+- The challenges associated with using alternative programs for evaluating a Python program's performance
+- The concept of order-of-growth as illustrate through examples of Python functions and their inputs
+- The ways in which the TaDa tool helps a programmer to automatically predict the order-of-growth for a Python function
+- Examples of the commands that a programmer would type to run the TaDa tool on their own Python functions
+- How to integrate TaDa into a realistic workflow for Python programming and the evaluation of function performance
+          <hr />
+          <div class="row row-wrap">
+            <div class="span3">
+              <div class="thumb center">
+                <div class="thumb-header">
+                  <a class="hover-img" href="http://codepalousa.com/SpeakerDetails/00645C11-DCF4-457B-AC8B-E78DE0734340">
+                    <img src="https://greeneventstechnology.azureedge.net/cpl20/speakers/Gregory_Kapfhammer.png" alt="Gregory Kapfhammer" title="Gregory Kapfhammer" />
+                  </a>
+                </div>
+                <div class="thumb-caption">
+                  <h5 class="thumb-title"><a href="http://codepalousa.com/SpeakerDetails/00645C11-DCF4-457B-AC8B-E78DE0734340">Gregory Kapfhammer</a></h5>
+                  <p class="thumb-meta"><br /></p>
+                </div>
+              </div>
+              <div class="thumb center">
+                <div class="thumb-header">
+                  <a class="hover-img" href="http://codepalousa.com/SpeakerDetails/26F50FFF-12DE-4026-82C0-B0CCBA7C4533">
+                    <img src="https://greeneventstechnology.azureedge.net/cpl20/speakers/Juncheng_Wu.png" alt="Juncheng Wu" title="Juncheng Wu" />
+                  </a>
+                </div>
+                <div class="thumb-caption">
+                  <h5 class="thumb-title"><a href="http://codepalousa.com/SpeakerDetails/26F50FFF-12DE-4026-82C0-B0CCBA7C4533">Juncheng Wu</a></h5>
+                  <p class="thumb-meta"><br /></p>
+                </div>
+              </div>
+              <div class="thumb center">
+                <div class="thumb-header">
+                  <a class="hover-img" href="http://codepalousa.com/SpeakerDetails/9A3472AC-82B0-4440-B215-F947260F460F">
+                    <img src="https://greeneventstechnology.azureedge.net/cpl20/speakers/Enpu_You.png" alt="Enpu You" title="Enpu You" />
+                  </a>
+                </div>
+                <div class="thumb-caption">
+                  <h5 class="thumb-title"><a href="http://codepalousa.com/SpeakerDetails/9A3472AC-82B0-4440-B215-F947260F460F">Enpu You</a></h5>
+                  <p class="thumb-meta"><br /></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="gap"></div>
+    </div>

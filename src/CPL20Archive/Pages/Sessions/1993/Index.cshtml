@@ -1,0 +1,52 @@
+@page
+@model CPL20Archive.Pages.Sessions._1993.IndexModel
+@{
+}
+    <div class="top-title-area bg-img-charcoal-eticket">
+      <div class="container">
+        <h1 class="title-page">Session Details</h1>
+      </div>
+    </div>
+    <div class="gap"></div>
+    <div class="container">
+      <div class="row">
+        <div class="span3">
+          <aside class="sidebar-left">
+            <br />
+            <h5 class="SessionDetails">Topic(s)</h5>
+           <a asp-page="/Sessions/Topic_AppDev">Application Development</a><br />
+            <br />
+          </aside>
+        </div>
+        <div class="span9">
+          <h2 id="MainContent_MainContent_SessionTitle" class="SessionDetails">Finding Bigfoot with Redis + RediSearch</h2>
+          <h5 id="MainContent_MainContent_SessionType" class="SessionDetails">Regular Session</h5>
+          <br />
+         <iframe width="560" height="315" src="https://www.youtube.com/embed/wV5VogBlsX0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          Bigfoot has been a staple of American folklore since the 19th century. Many are convinced that Bigfoot is real. Others suggest he’s merely a cultural phenomenon. And some just want to believe. There is even a group, the Bigfoot Field Researchers Organization, that tracks Bigfoot sightings and makes the reports available online. And they have thousands of reports.
+
+I want to explore this delightful data but, unfortunately, it’s been made for the convenience of humans and not computers. While this makes it easy for me to read, searching for reports can be a bit of a challenge. Some of the data is tidy and computer friendly—like the latitude and longitude. Other bits are really for us humans—like the eyewitness accounts. So, how can I find the Bigfoot sightings that interest me most with data structured like this?
+
+Well, I’ll show you! In this talk, I’ll load these Bigfoot sightings into Redis and use RediSearch to index them, making it easy to query both the computer friendly bits and the human friendly bits. I’ll also show you how to search on fields, find keywords within text, find nearby Bigfoot sightings using geolocation data, and run queries that aggregate these searches.
+
+When we’re done, you’ll know how to quickly search, query, and aggregate data in Redis using RediSearch. You can use this newfound power for boring old corporate data, but I’m going to use it to find Bigfoot!
+          <hr />
+          <div class="row row-wrap">
+            <div class="span3">
+              <div class="thumb center">
+                <div class="thumb-header">
+                  <a class="hover-img" href="http://codepalousa.com/SpeakerDetails/620dc389-0b76-4fba-9356-4cc53cb35aab">
+                    <img src="https://greeneventstechnology.azureedge.net/cpl20/speakers/Guy_Royse.png" alt="Guy Royse" title="Guy Royse" />
+                  </a>
+                </div>
+                <div class="thumb-caption">
+                  <h5 class="thumb-title"><a href="http://codepalousa.com/SpeakerDetails/620dc389-0b76-4fba-9356-4cc53cb35aab">Guy Royse</a></h5>
+                  <p class="thumb-meta"><br /></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="gap"></div>
+    </div>

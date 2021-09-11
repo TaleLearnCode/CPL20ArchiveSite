@@ -1,0 +1,53 @@
+@page
+@model CPL20Archive.Pages.Sessions._2105.IndexModel
+@{
+}
+    <div class="top-title-area bg-img-charcoal-eticket">
+      <div class="container">
+        <h1 class="title-page">Session Details</h1>
+      </div>
+    </div>
+    <div class="gap"></div>
+    <div class="container">
+      <div class="row">
+        <div class="span3">
+          <aside class="sidebar-left">
+            <br />
+            <h5 class="SessionDetails">Topic(s)</h5>
+           <a asp-page="/Sessions/Topic_AppDev">Application Development</a><br />
+            <br />
+          </aside>
+        </div>
+        <div class="span9">
+          <h2 id="MainContent_MainContent_SessionTitle" class="SessionDetails">Representing and Accessing Data That Changes Over Time</h2>
+          <h5 id="MainContent_MainContent_SessionType" class="SessionDetails">Regular Session</h5>
+          <br />
+          This talk answers the question “What’s a clean way to represent data that changes over time?”
+
+We can store the attributes that change over time (variable attributes) on a versioned table and stable attributes on a base table.   Storing variable attributes in a versioned table with an effective date range makes it easy to find which version is applicable for a given date.  
+
+We’ll look at some examples of entities with variable attributes (e.g. a loan, an editable product)  how to represent them as versioned records.
+
+After coverings the basics of representing versioned records,  we’ll go over a few invariants to maintain to ensure a consistent representation of versioned records.  
+
+ To wrap up,  I’ll demonstrate how to look up all attributes for a versioned record.  This way, when looking up a record, we can get both the versioned and stable attributes in one shot.  
+          <hr />
+          <div class="row row-wrap">
+            <div class="span3">
+              <div class="thumb center">
+                <div class="thumb-header">
+                  <a class="hover-img" href="http://codepalousa.com/SpeakerDetails/4C020D76-4AA4-4F04-8D0E-67C2DD9E0AA7">
+                    <img src="https://greeneventstechnology.azureedge.net/cpl20/speakers/Lydia_Cupery.png" alt="Lydia Cupery" title="Lydia Cupery" />
+                  </a>
+                </div>
+                <div class="thumb-caption">
+                  <h5 class="thumb-title"><a href="http://codepalousa.com/SpeakerDetails/4C020D76-4AA4-4F04-8D0E-67C2DD9E0AA7">Lydia Cupery</a></h5>
+                  <p class="thumb-meta"><br /></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="gap"></div>
+    </div>

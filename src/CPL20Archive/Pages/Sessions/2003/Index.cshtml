@@ -1,0 +1,58 @@
+@page
+@model CPL20Archive.Pages.Sessions._2003.IndexModel
+@{
+}
+    <div class="top-title-area bg-img-charcoal-eticket">
+      <div class="container">
+        <h1 class="title-page">Session Details</h1>
+      </div>
+    </div>
+    <div class="gap"></div>
+    <div class="container">
+      <div class="row">
+        <div class="span3">
+          <aside class="sidebar-left">
+            <br />
+            <h5 class="SessionDetails">Topic(s)</h5>
+           <a asp-page="/Sessions/Topic_AppDev">Application Development</a><br />
+            <br />
+          </aside>
+        </div>
+        <div class="span9">
+          <h2 id="MainContent_MainContent_SessionTitle" class="SessionDetails">Jinaga: End-to-End State Management for Offline-First Web Applications</h2>
+          <h5 id="MainContent_MainContent_SessionType" class="SessionDetails">Regular Session</h5>
+          <br />
+         <iframe width="560" height="315" src="https://www.youtube.com/embed/i0nAl4XV4DU" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          State management libraries like Redux make it easier to coordinate changes in all parts of your web applications. But they stop at the browser. You are still responsible for developing the API and back-end data store.
+
+Jinaga is an end-to-end state management solution. No custom API. No app-specific database. You write your model, and Jinaga takes it from there:
+	• Local storage for offline-first web apps and PWAs
+	• Reliable communication with delivery guarantees
+	• Application-agnostic persistence for low-friction data evolution
+	• Server-sent events for real-time collaboration
+
+What makes this work is a completely different approach to data management. You won't find stores, actions, and reducers. Instead, Jinaga is based on Immutable Architecture. Store the user's decisions as immutable facts. Share those decisions with other clients who express interest. And then interpret those decisions as UI updates.
+
+This does require a shift to your mental model. It won't be easy. But if you apply immutability end-to-end, you might find that many of the hard problems of collaborative web apps are no longer hard problems.
+
+Please allow me to introduce you to Jinaga.
+          <hr />
+          <div class="row row-wrap">
+            <div class="span3">
+              <div class="thumb center">
+                <div class="thumb-header">
+                  <a class="hover-img" href="http://codepalousa.com/SpeakerDetails/F2406E79-EF61-4B09-80B6-C19479EBC88D">
+                    <img src="https://greeneventstechnology.azureedge.net/cpl20/speakers/Michael_Perry.png" alt="Michael Perry" title="Michael Perry" />
+                  </a>
+                </div>
+                <div class="thumb-caption">
+                  <h5 class="thumb-title"><a href="http://codepalousa.com/SpeakerDetails/F2406E79-EF61-4B09-80B6-C19479EBC88D">Michael Perry</a></h5>
+                  <p class="thumb-meta"><br /></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="gap"></div>
+    </div>

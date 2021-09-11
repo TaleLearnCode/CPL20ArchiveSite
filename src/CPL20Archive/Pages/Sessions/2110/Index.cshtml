@@ -1,0 +1,57 @@
+@page
+@model CPL20Archive.Pages.Sessions._2110.IndexModel
+@{
+}
+    <div class="top-title-area bg-img-charcoal-eticket">
+      <div class="container">
+        <h1 class="title-page">Session Details</h1>
+      </div>
+    </div>
+    <div class="gap"></div>
+    <div class="container">
+      <div class="row">
+        <div class="span3">
+          <aside class="sidebar-left">
+            <br />
+            <h5 class="SessionDetails">Topic(s)</h5>
+           
+            <br />
+          </aside>
+        </div>
+        <div class="span9">
+          <h2 id="MainContent_MainContent_SessionTitle" class="SessionDetails">Kubernetes. Now What? Data Management in a Distributed Cluster</h2>
+          <h5 id="MainContent_MainContent_SessionType" class="SessionDetails">Regular Session</h5>
+          <br />
+          You have a cluster. You can scale up and down at a moment's notice. You can roll updates without taking down your services. So are all your problems solved?
+
+Not quite. You still have the issue of keeping your microservices in sync.
+
+You want each service to be able to make its own decisions autonomously. They therefore need to store their own copy of the data that they need. But that copy is not always up-to-date. To achieve consistency at scale, you need to design messages that will let pods converge within a reasonable time. Those messages need to be idempotent so that repeats do not cause duplication. And they need to be commutative so that pods will converge even after receiving messages in different orders.
+
+These are not trivial properties. They are difficult to achieve in a traditional mutation-based paradigm. But if your model was immutable, then you would get these properties almost for free. Every copy of an immutable record is just as good as any other, and it will never be out-of-date. The trick then is how to model your application using only immutable records.
+
+Let me show you how.
+
+We'll begin by analyzing your problem domain using a causal historical model. You will see how workflow patterns take us beyond state-machine thinking and solve technical problems and business problems simultaneously. Then we will map that immutable model into messages so that we can deploy it to our cluster. Use AMQP, Kafka, or any messaging infrastructure that you are comfortable with. Finally, we will employ the sidecar pattern to translate the immutable model back into the mutation-based entities that our application containers expect.
+
+Kubernetes is a wonderful tool for managing workloads. Now that you have it, apply the patterns of immutable architecture to manage data within your distributed cluster.
+          <hr />
+          <div class="row row-wrap">
+            <div class="span3">
+              <div class="thumb center">
+                <div class="thumb-header">
+                  <a class="hover-img" href="http://codepalousa.com/SpeakerDetails/F2406E79-EF61-4B09-80B6-C19479EBC88D">
+                    <img src="https://greeneventstechnology.azureedge.net/cpl20/speakers/Michael_Perry.png" alt="Michael Perry" title="Michael Perry" />
+                  </a>
+                </div>
+                <div class="thumb-caption">
+                  <h5 class="thumb-title"><a href="http://codepalousa.com/SpeakerDetails/F2406E79-EF61-4B09-80B6-C19479EBC88D">Michael Perry</a></h5>
+                  <p class="thumb-meta"><br /></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="gap"></div>
+    </div>
